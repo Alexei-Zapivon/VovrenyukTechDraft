@@ -438,16 +438,58 @@ section {
     color: var(--acc)
 }
 
-.copy-btn {
+.icon-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 42px;
+    height: 42px;
+    padding: 0;
     border: 1px solid #2a3158;
+    border-radius: 12px;
     background: #11162a;
     color: var(--text);
-    border-radius: 10px;
-    padding: 6px 12px;
-    font-size: 13px;
-    font-weight: 600;
     cursor: pointer;
-    transition: background .2s ease, color .2s ease, border-color .2s ease
+    transition: background .2s ease, color .2s ease, border-color .2s ease, transform .2s ease
+}
+
+.icon-btn svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    transition: opacity .2s ease
+}
+
+.icon-btn svg[hidden] {
+    display: none
+}
+
+.icon-btn:hover {
+    background: #1a2034;
+    border-color: #39447a;
+    transform: translateY(-1px)
+}
+
+.icon-btn:active {
+    transform: translateY(0)
+}
+
+.icon-btn:focus-visible {
+    outline: 2px solid var(--acc);
+    outline-offset: 3px
+}
+
+.icon-btn.is-active {
+    background: linear-gradient(135deg, var(--acc2), var(--acc));
+    color: #0b1020;
+    border-color: transparent;
+    box-shadow: 0 10px 24px rgba(124, 164, 255, .18)
+}
+
+.copy-btn {
+    font-size: 0;
+    line-height: 0
 }
 
 .copy-btn:hover {
@@ -459,7 +501,13 @@ section {
 .copy-btn.copied {
     background: var(--ok);
     color: #0b1020;
-    border-color: transparent
+    border-color: transparent;
+    box-shadow: 0 10px 24px rgba(34, 197, 94, .24)
+}
+
+.copy-btn.copied:hover {
+    background: var(--ok);
+    color: #0b1020
 }
 
 .contact-inline {
@@ -482,6 +530,15 @@ section {
     letter-spacing: .08em;
     color: var(--text);
     transition: opacity .3s ease;
+}
+
+.contact-link .contact-link__number {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: .02em;
+    color: var(--text);
+    text-transform: none;
+    line-height: 1.2;
 }
 
 .contact-inline__value.is-fading-out {
@@ -516,8 +573,8 @@ section {
 .toggle-btn {
     background: linear-gradient(135deg, #1f2a44, #2a375b);
     color: #9fb6ff;
-    box-shadow: none;
-    transition: background .2s ease, color .2s ease, transform .2s ease
+    border-color: #39447a;
+    box-shadow: none
 }
 
 .toggle-btn.is-active {

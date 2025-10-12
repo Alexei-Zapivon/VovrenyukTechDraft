@@ -13,10 +13,28 @@
   window.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
 
   document.querySelectorAll(".copy-btn").forEach(btn => {
+    const iconDefault = btn.querySelector(".icon-copy");
+    const iconSuccess = btn.querySelector(".icon-check");
+    const baseLabel = btn.getAttribute("aria-label") || "Скопировать";
+    const copiedLabel = btn.dataset.copiedLabel || "Скопировано";
+    let resetTimer = null;
+
+    const setState = copied => {
+      btn.classList.toggle("copied", copied);
+      btn.setAttribute("aria-label", copied ? copiedLabel : baseLabel);
+      if (iconDefault) iconDefault.hidden = copied;
+      if (iconSuccess) iconSuccess.hidden = !copied;
+    };
+
+    setState(false);
+
     btn.addEventListener("click", async () => {
       const value = btn.getAttribute("data-copy");
       if (!value) return;
-      const original = btn.textContent;
+      if (resetTimer) {
+        clearTimeout(resetTimer);
+        resetTimer = null;
+      }
       try {
         if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(value);
         else {
@@ -29,14 +47,16 @@
           document.execCommand("copy");
           ta.remove();
         }
-        btn.textContent = "Скопировано";
-        btn.classList.add("copied");
-        setTimeout(() => { btn.textContent = original; btn.classList.remove("copied"); }, 1800);
-      } catch (e) { console.error("Не удалось скопировать", e); }
+        setState(true);
+        resetTimer = window.setTimeout(() => setState(false), 1800);
+      } catch (e) {
+        setState(false);
+        console.error("Не удалось скопировать", e);
+      }
     });
   });
 
-  // Плавное появление блоков
+
   const io = new IntersectionObserver(es => es.forEach(e => {
     if (e.isIntersecting) e.target.classList.add("visible");
   }), { threshold: .2 });
@@ -52,9 +72,18 @@
     let isRevealed = valueEl.textContent.trim() === full;
     let animating = false;
 
+    const iconShow = toggleBtn.querySelector(".icon-eye");
+    const iconHide = toggleBtn.querySelector(".icon-eye-off");
+    const labelShow = toggleBtn.dataset.labelShow || "Показать полностью";
+    const labelHide = toggleBtn.dataset.labelHide || "Скрыть номер";
+
     const updateButton = () => {
-      toggleBtn.textContent = isRevealed ? "Скрыть номер" : "Показать полностью";
+      const label = isRevealed ? labelHide : labelShow;
+      toggleBtn.setAttribute("aria-label", label);
       toggleBtn.setAttribute("aria-expanded", String(isRevealed));
+      if (iconShow) iconShow.hidden = isRevealed;
+      if (iconHide) iconHide.hidden = !isRevealed;
+      toggleBtn.classList.toggle("is-active", isRevealed);
     };
 
     valueEl.addEventListener("transitionend", evt => {
