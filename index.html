@@ -1,0 +1,356 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>VovrenyukTechDraft — Ведущий инженер-конструктор | 3D-модели, чертежи по ЕСКД</title>
+    <link rel="preload" href="/assets/css/style.css" as="style">
+    <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" href="/assets/css/components.css">
+    <meta name="description" content="Качественно и в срок: 3D-модели, чертежи по ЕСКД, спецификации, сопроводительная документация (ПС, РЭ, Ведомость ЗИП). Механообработка, сварка, гибка (DXF). Опыт 15+ лет." />
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.min.js",
+            "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/"
+          }
+        }
+    </script>
+</head>
+
+<body>
+    <header class="header">
+        <div class="wrap nav">
+            <a href="#top" class="brand"><span class="dot"></span> VovrenyukTechDraft</a>
+
+            <nav class="nav-links">
+                <a href="#services">Услуги</a>
+                <a href="#process">Процесс</a>
+                <a href="#portfolio">Примеры</a>
+                <a href="#contacts">Контакты</a>
+            </nav>
+
+            <div style="display:flex; gap:10px; align-items:center">
+                <a class="cta" href="#contacts">Связаться</a>
+
+                <button id="burger" class="burger" aria-label="Открыть меню" aria-expanded="false">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div id="mobileBackdrop" class="mobile-backdrop" hidden></div>
+
+        <aside id="mobilePanel" class="mobile-panel" aria-hidden="true">
+            <div class="mobile-header">
+                <div class="brand"><span class="dot"></span> Меню</div>
+                <button id="mobileClose" class="mobile-close" aria-label="Закрыть меню">
+                    <svg viewBox="0 0 24 24" fill="none">
+                        <path d="M6 6L18 18M6 18L18 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                    </svg>
+                </button>
+            </div>
+            <nav style="display:flex;flex-direction:column;gap:6px;margin-top:6px">
+                <a href="#services">Услуги</a>
+                <a href="#process">Процесс</a>
+                <a href="#portfolio">Примеры</a>
+                <a href="#contacts">Контакты</a>
+                <a class="cta" href="#contacts" style="margin-top:12px;justify-content:center">Связаться</a>
+            </nav>
+            <div class="note" style="margin-top:auto">© 2025 VovrenyukTechDraft</div>
+        </aside>
+    </header>
+
+    <main class="wrap">
+        <section class="hero" id="top">
+            <div>
+                <span class="badge"><span class="i"></span> Сроки соблюдаем. Качество контролируем.</span>
+                <h1>Качественно и в срок разработаю 3D-модель и оформлю чертежи по ЕСКД под требования вашего проекта
+                </h1>
+                <p class="lead">Ведущий инженер-конструктор с опытом работы в отрасли более 15 лет. Разработаю как
+                    отдельные чертежи, так и полный цикл: от оформления ТЗ до изготовления опытного образца.</p>
+                <div class="kpi">
+                    <div>3D > DXF / STEP / STL</div>
+                    <div>Механообработка, сварка, гибка</div>
+                    <div>Сборочные чертежи, спецификации</div>
+                    <div>ПС, РЭ, Ведомость ЗИП</div>
+                </div>
+                <p style="margin-top:18px"><a class="cta cta-hero" href="#contacts">Обсудить задачу</a></p>
+            </div>
+
+            <div class="hero-visual card fade-up">
+                <div id="modelWrap">
+                    <canvas id="modelCanvas"></canvas>
+                    <div id="blueprint" aria-hidden="true"
+                        style="position:absolute;inset:0;pointer-events:none;opacity:.25;background-image:linear-gradient(transparent 95%, rgba(255,255,255,.25) 95%), linear-gradient(90deg, transparent 95%, rgba(255,255,255,.25) 95%);background-size:20px 20px,20px 20px">
+                    </div>
+                </div>
+                <div class="controls"
+                    style="display:flex;gap:12px;align-items:center;justify-content:space-between;margin-top:10px;flex-wrap:wrap">
+                    <label for="explode" class="range-control">
+                        <span class="range-label muted">Разборка</span>
+                        <input id="explode" type="range" min="0" max="100" value="0">
+                        <span id="explodeValue" class="range-value muted">0%</span>
+                    </label>
+                    <div style="display:flex;gap:8px">
+                        <button id="viewSolid" class="cta toggle-btn is-active" type="button">Рендер</button>
+                        <button id="viewWire" class="cta toggle-btn" type="button">Каркас</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="fade-up" id="about">
+            <div class="about card" style="background:linear-gradient(180deg,rgba(122,92,255,.06),transparent 45%)">
+                <div class="photo">
+                    <img src="./images/hero/engineer.jpg" alt="Ведущий инженер-конструктор" loading="lazy">
+                </div>
+                <div>
+                    <h2 style="margin:0 0 6px">Ведущий инженер-конструктор</h2>
+                    <p class="muted" style="margin:0 0 12px">Вовренюк Михаил Анатольевич 38 лет, Опыт в отрасли более 15
+                        лет. Разрабатываю как отдельные
+                        чертежи, так и полный цикл.</p>
+                    <div class="badges">
+                        <span class="badge2">ЕСКД, ГОСТ</span>
+                        <span class="badge2">3D > STEP / STL / DXF</span>
+                        <span class="badge2">Сборочные чертежи и спецификации</span>
+                        <span class="badge2">ПС, РЭ, Ведомость ЗИП</span>
+                    </div>
+                    <p class="muted" style="margin-top:12px">Работа с юр. и физ. лицами. Самозанятый — возможен безнал
+                        по счёту.</p>
+                    <div class="contact-cta">
+                        <a class="cta" href="#contacts">Обсудить проект</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="fade-up">
+            <div class="card">
+                <h3>Коротко о «карточке» услуги</h3>
+                <p>
+                    Разрабатываю 3D-модели и конструкторскую документацию для деталей и узлов, <strong>изготавливаемых
+                        методом
+                        механической обработки, сварки или гибки.</strong> При необходимости предоставляю
+                    <strong>DXF-файлы</strong> для лазерной
+                    резки и раскроя.
+                    Оформляю рабочие и сборочные чертежи<strong> с допусками и посадками</strong>, спецификацию и
+                    сопроводительную
+                    документацию (ПС, РЭ, Ведомость ЗИП). Возможна визуализация изделий — рендеры и иллюстрации по
+                    готовым 3D-моделям. Все работы выполняются в согласованные сроки.
+                </p>
+            </div>
+        </section>
+
+        <section class="fade-up">
+            <div class="grid">
+                <div class="card">
+                    <h3>Синие линии</h3>
+                    <p class="muted">Лёгкая чертёжная сетка и каркасные рёбра создают ощущение инженерной точности и
+                        подчёркивают технический характер визуала</p>
+                </div>
+                <div class="card">
+                    <h3>Сборка на ползунке</h3>
+                    <p class="muted">Ползунок «Сборка» раскрывает модель по слоям, показывая конструкцию узла — эффектно
+                        и информативно</p>
+                </div>
+                <div class="card">
+                    <h3>Wireframe / Render</h3>
+                    <p class="muted">Один клик — и модель переключается с технического каркаса на фотореалистичный
+                        рендер. Для точности и для впечатления</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="services">
+            <h2 style="margin:0 0 14px">Услуги</h2>
+            <div class="grid">
+                <div class="card fade-up">
+                    <h3>3D-моделирование</h3>
+                    <ul class="list">
+                        <li>Параметрические 3D-модели деталей и узлов</li>
+                        <li>Экспорт: STEP/IGES/STL/Parasolid, DXF для раскроя</li>
+                        <li>Оптимизация под технологию изготовления</li>
+                    </ul>
+                </div>
+                <div class="card fade-up">
+                    <h3>Чертежи по ЕСКД</h3>
+                    <ul class="list">
+                        <li>ЕСКД, ГОСТ — форматы A4–A0</li>
+                        <li>Указание допусков, посадок, шероховатости</li>
+                        <li>Сборочные чертежи и спецификации (BOM)</li>
+                    </ul>
+                </div>
+                <div class="card fade-up">
+                    <h3>Документация</h3>
+                    <ul class="list">
+                        <li>Эксплуатационные документы: ПС, РЭ, ЗИП</li>
+                        <li>ТЗ, ведомости, паспорта изделий</li>
+                        <li>Комплект на опытный образец</li>
+                    </ul>
+                </div>
+                <div class="card fade-up">
+                    <h3>Под изготовление</h3>
+                    <ul class="list">
+                        <li>Механообработка, сварка, гибка/штамповка</li>
+                        <li>Карта раскроя, развертки (DXF)</li>
+                        <li>Подготовка CAM-заданий (по договорённости)</li>
+                    </ul>
+                </div>
+                <div class="card fade-up">
+                    <h3>Визуализация</h3>
+                    <ul class="list">
+                        <li>Фотореалистичные рендеры изделий</li>
+                        <li>Технические иллюстрации и схемы</li>
+                        <li>Изображения для презентаций и ТКП</li>
+                    </ul>
+                </div>
+                <div class="card fade-up">
+                    <h3>Сопровождение</h3>
+                    <ul class="list">
+                        <li>Работа с юр. и физ. лицами</li>
+                        <li>Самозанятый: безнал, счёт</li>
+                        <li>Конфиденциальность и NDA</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="process">
+            <h2 style="margin:0 0 14px">Как работаем</h2>
+            <div class="cols">
+                <div class="card fade-up">
+                    <h3>1. Бриф и ТЗ</h3>
+                    <p class="muted">Обсуждаем задачу, требования, сроки. Помогаю структурировать ТЗ.</p>
+                </div>
+                <div class="card fade-up">
+                    <h3>2. Концепт и 3D</h3>
+                    <p class="muted">Создаю 3D-модель. Согласуем решения, материалы, допуски.</p>
+                </div>
+                <div class="card fade-up">
+                    <h3>3. Чертежи и спецификация</h3>
+                    <p class="muted">Оформляю комплект по ЕСКД с посадками и допусками.</p>
+                </div>
+                <div class="card fade-up">
+                    <h3>4. Документация и рендеры</h3>
+                    <p class="muted">Готовлю ПС, РЭ, ЗИП, по запросу — визуализации.</p>
+                </div>
+                <div class="card fade-up">
+                    <h3>5. Передача и поддержка</h3>
+                    <p class="muted">Передаю исходники и файлы производства (DXF/STEP и др.). Поддержка на изготовлении.
+                    </p>
+                </div>
+                <div class="card fade-up">
+                    <h3>Сроки</h3>
+                    <p class="muted">Этапы и дедлайны фиксируем заранее.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="portfolio">
+            <h2 style="margin:0 0 14px">Примеры работ</h2>
+            <p class="muted">Ниже примеры рендеров / изделий</p>
+            <div class="gallery">
+                <div class="cell"><img src="./images/projects/01.jpg" alt="Проект 1" loading="lazy"></div>
+                <div class="cell"><img src="./images/projects/02.jpg" alt="Проект 2" loading="lazy"></div>
+                <div class="cell"><img src="./images/projects/03.jpg" alt="Проект 3" loading="lazy"></div>
+                <div class="cell"><img src="./images/projects/04.jpg" alt="Проект 4" loading="lazy"></div>
+                <div class="cell"><img src="./images/projects/05.jpg" alt="Проект 5" loading="lazy"></div>
+                <div class="cell"><img src="./images/projects/06.jpg" alt="Проект 6" loading="lazy"></div>
+            </div>
+        </section>
+
+        <section id="contacts">
+            <h2 style="margin:0 0 14px">Связаться и оплатить</h2>
+            <div class="contacts-grid">
+                <div class="contacts-main fade-up">
+                    <h3 style="margin:0">Прямые контакты</h3>
+                    <p class="muted">Предпочитаете звонок или письмо — отвечаю быстро в рабочие часы.</p>
+                    <div class="primary-contacts">
+                        <div class="contact-line">
+                            <a class="contact-link" href="tel:+79518255738">
+                                <span>Телефон</span>
+                                +7 951 825-57-38
+                            </a>
+                            <button class="copy-btn" type="button" data-copy="+7 951 825-57-38">Скопировать</button>
+                        </div>
+                        <div class="contact-line">
+                            <a class="contact-link"
+                                href="mailto:vovrenyuk_work@rambler.ru?subject=Заявка%20на%203D%20и%20чертежи">
+                                <span>Почта</span>
+                                vovrenyuk_work@rambler.ru
+                            </a>
+                            <button class="copy-btn" type="button"
+                                data-copy="vovrenyuk_work@rambler.ru">Скопировать</button>
+                        </div>
+                    </div>
+                    <div class="contact-actions">
+                        <a class="cta" href="mailto:vovrenyuk_work@rambler.ru?subject=Заявка%20на%203D%20и%20чертежи">
+                            Email
+                        </a>
+                    </div>
+                    <p class="contact-note">Работаю по РФ и СНГ, возможны личные встречи. NDA и договор — без проблем.
+                    </p>
+                </div>
+
+                <div class="contacts-pay fade-up">
+                    <h3 style="margin:0">Оплата и документы</h3>
+                    <p class="muted">Работаю с юридическими и физическими лицами. Передаю полный комплект, готовый к
+                        производству.</p>
+                    <ul class="payment-points">
+                        <li>Безналичный расчёт, счёт и договор с реквизитами.</li>
+                        <li>Полный пакет: 3D модели, чертежи, спецификации и ведомости.</li>
+                        <li>NDA по запросу, бережно работаю с конфиденциальными данными.</li>
+                    </ul>
+                    <div class="payment-tags">
+                        <span class="tag">STEP</span>
+                        <span class="tag">STL</span>
+                        <span class="tag">DXF</span>
+                        <span class="tag">PDF</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <footer class="footer">
+            <div>
+                <div class="brand"><span class="dot"></span> VovrenyukTechDraft</div>
+                <p class="note">© 2025. Все права защищены. Материалы на сайте — для демонстрации компетенций.</p>
+            </div>
+            <div>
+                <h4>Навигация</h4>
+                <p class="muted"><a href="#services">Услуги</a> · <a href="#portfolio">Примеры</a> · <a
+                        href="#contacts">Контакты</a></p>
+            </div>
+            <div>
+                <h4>Связь</h4>
+                <p class="muted"><a href="tel:+79518255738">+7 951 825-57-38</a><br />
+                    <a href="mailto:vovrenyuk_work@rambler.ru">vovrenyuk_work@rambler.ru</a>
+                </p>
+            </div>
+        </footer>
+    </main>
+
+    <div id="galleryLightbox" class="lightbox" role="dialog" aria-modal="true" aria-hidden="true" hidden>
+        <button type="button" class="lightbox-close" aria-label="Закрыть просмотр">
+            <span aria-hidden="true">&#215;</span>
+        </button>
+        <button type="button" class="lightbox-nav lightbox-prev" aria-label="Предыдущее фото">
+            <span aria-hidden="true">&#10094;</span>
+        </button>
+        <button type="button" class="lightbox-nav lightbox-next" aria-label="Следующее фото">
+            <span aria-hidden="true">&#10095;</span>
+        </button>
+        <div class="lightbox-frame">
+            <img id="lightboxImage" alt="">
+            <p id="lightboxCaption" class="lightbox-caption"></p>
+        </div>
+    </div>
+
+    <script src="/assets/js/main.js" type="module"></script>
+
+</body>
+</html>
