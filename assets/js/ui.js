@@ -3,13 +3,51 @@
   const burger = document.getElementById("burger");
   const closeBtn = document.getElementById("mobileClose");
   const backdrop = document.getElementById("mobileBackdrop");
+  const panel = document.getElementById("mobilePanel");
+  let hideMenuTimer = null;
 
-  const openMenu = () => html.classList.add("mobile-open");
-  const closeMenu = () => html.classList.remove("mobile-open");
+  const openMenu = () => {
+    if (hideMenuTimer) {
+      window.clearTimeout(hideMenuTimer);
+      hideMenuTimer = null;
+    }
+    if (panel) {
+      panel.hidden = false;
+      panel.setAttribute("aria-hidden", "false");
+    }
+    if (backdrop) {
+      backdrop.hidden = false;
+    }
+    requestAnimationFrame(() => html.classList.add("mobile-open"));
+    burger?.setAttribute("aria-expanded", "true");
+  };
+  const closeMenu = () => {
+    html.classList.remove("mobile-open");
+    burger?.setAttribute("aria-expanded", "false");
+    if (panel) panel.setAttribute("aria-hidden", "true");
+    hideMenuTimer = window.setTimeout(() => {
+      if (html.classList.contains("mobile-open")) return;
+      if (panel) panel.hidden = true;
+      if (backdrop) backdrop.hidden = true;
+    }, 260);
+  };
 
-  burger?.addEventListener("click", openMenu);
+  burger?.addEventListener("click", () => {
+    if (html.classList.contains("mobile-open")) {
+      closeMenu();
+    } else {
+      openMenu();
+    }
+  });
   closeBtn?.addEventListener("click", closeMenu);
   backdrop?.addEventListener("click", closeMenu);
+  panel?.addEventListener("click", evt => evt.stopPropagation());
+  document.addEventListener("pointerdown", evt => {
+    if (!html.classList.contains("mobile-open")) return;
+    if (panel?.contains(evt.target)) return;
+    if (burger?.contains(evt.target)) return;
+    closeMenu();
+  });
   window.addEventListener("keydown", e => { if (e.key === "Escape") closeMenu(); });
 
   document.querySelectorAll(".copy-btn").forEach(btn => {
