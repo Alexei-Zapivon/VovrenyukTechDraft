@@ -59,25 +59,40 @@ header {
     text-decoration: none
 }
 
-.brand .dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--acc), var(--acc2));
-    animation: pulse 3s infinite ease-in-out
+.brand__logo {
+    width: clamp(26px, 3vw, 32px);
+    height: auto;
+    display: block;
+    object-fit: contain;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 12px rgba(0, 198, 255, .18));
+    transition: transform .5s cubic-bezier(.25, 1, .5, 1), filter .5s ease, opacity .4s ease
 }
 
-@keyframes pulse {
+@media (prefers-reduced-motion: no-preference) {
+    .brand__logo {
+        animation: brandFloat 6.4s ease-in-out infinite;
+    }
 
-    0%,
-    100% {
-        opacity: .6;
-        transform: scale(1)
+    .brand:hover .brand__logo,
+    .brand:focus-visible .brand__logo {
+        animation: none;
+        transform: rotate(-6deg) scale(1.05);
+        filter: drop-shadow(0 10px 24px rgba(122, 92, 255, .32));
+    }
+}
+
+@keyframes brandFloat {
+    0% {
+        transform: translateY(0) scale(1);
     }
 
     50% {
-        opacity: 1;
-        transform: scale(1.2)
+        transform: translateY(-3px) scale(1.03);
+    }
+
+    100% {
+        transform: translateY(0) scale(1);
     }
 }
 
