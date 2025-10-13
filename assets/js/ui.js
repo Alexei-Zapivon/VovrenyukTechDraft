@@ -132,7 +132,7 @@
         isRevealed = !isRevealed;
         valueEl.textContent = isRevealed ? full : masked;
         updateButton();
-        // force reflow before fading back in
+
         void valueEl.offsetWidth;
         valueEl.classList.add("is-fading-in");
         return;

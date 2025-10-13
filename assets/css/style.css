@@ -363,7 +363,6 @@ section {
     font-variant-numeric: tabular-nums;
 }
 
-/* --- About / Contacts wide / Gallery images --- */
 .about {
     display: grid;
     grid-template-columns: 320px 1fr;
@@ -969,7 +968,6 @@ html.lightbox-open {
     }
 }
 
-/* ===== Header: мобильная навигация ===== */
 .header {
     position: sticky;
     top: 0;
