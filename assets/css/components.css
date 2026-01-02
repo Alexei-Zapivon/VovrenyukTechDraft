@@ -1,0 +1,104 @@
+:root {
+    --print-accent: var(--acc);
+    --print-accent-2: var(--acc2);
+    --print-tab-bg: #0e162d;
+    --print-tab-border: #1c2746;
+}
+
+#print-guide {
+    position: relative;
+}
+
+.print-nav {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 6px 0 18px;
+}
+
+.print-tab {
+    appearance: none;
+    border: 1px solid var(--print-tab-border);
+    background: var(--print-tab-bg);
+    color: #d5def6;
+    padding: 10px 16px;
+    border-radius: 999px;
+    font-weight: 600;
+    letter-spacing: .02em;
+    cursor: default;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+}
+
+.print-tab:not(.is-active) {
+    color: #c5cde4;
+    transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+
+.print-tab:not(.is-active):hover {
+    border-color: #28375a;
+    color: #e3ebff;
+}
+
+.print-tab.is-active {
+    background: linear-gradient(135deg, var(--print-accent-2), var(--print-accent));
+    color: #061024;
+    border-color: transparent;
+    box-shadow: 0 14px 34px rgba(0, 198, 255, .22);
+}
+
+.print-grid {
+    align-items: stretch;
+    gap: 18px;
+}
+
+.print-card {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 10px 6px;
+    transition: none;
+}
+
+.print-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.print-icon {
+    width: 78px;
+    height: 78px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: linear-gradient(180deg, var(--print-accent-2), var(--print-accent));
+    color: #fff;
+    box-shadow: 0 14px 30px rgba(0, 198, 255, .2);
+}
+
+.print-icon svg {
+    width: 36px;
+    height: 36px;
+}
+
+.print-step {
+    color: #2ac8ff;
+    font-weight: 700;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    font-size: 13px;
+}
+
+.print-card h3 {
+    margin: 2px 0 6px;
+}
+
+.print-card p {
+    margin: 0;
+    line-height: 1.5;
+}
