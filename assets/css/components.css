@@ -102,3 +102,293 @@
     margin: 0;
     line-height: 1.5;
 }
+
+/* ===== ОТЗЫВЫ ===== */
+
+.reviews-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 40px;
+}
+
+.reviews-empty { grid-column: 1/-1; }
+
+/* Карточка */
+.review-card {
+    background: var(--card);
+    border: 1px solid #222949;
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    transition: border-color .2s, transform .2s;
+}
+
+.review-card:hover { border-color: #2e3660; transform: translateY(-2px); }
+
+.review-card__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.review-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+}
+
+.review-card__name {
+    font-weight: 600;
+    font-size: 15px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.review-card__stars { display: flex; gap: 2px; }
+
+.review-card__date {
+    font-size: 12px;
+    white-space: nowrap;
+    margin-left: auto;
+    align-self: flex-start;
+}
+
+.review-card__text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--text);
+}
+
+/* Аватар в карточке */
+.review-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 2px solid rgba(255,255,255,.08);
+}
+
+.review-avatar--initials {
+    background: linear-gradient(135deg, var(--acc2), var(--acc));
+    color: #061024;
+    font-size: 15px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: .02em;
+}
+
+/* Звезда */
+.star {
+    width: 16px;
+    height: 16px;
+    fill: rgba(255,255,255,.12);
+    stroke: rgba(255,255,255,.18);
+    stroke-width: 1.2;
+    stroke-linejoin: round;
+    transition: fill .15s, stroke .15s;
+}
+
+.star--on { fill: #fbbf24; stroke: #f59e0b; }
+
+/* Форма */
+.review-form-wrap {
+    background: var(--card);
+    border: 1px solid #222949;
+    border-radius: 18px;
+    padding: 28px;
+    max-width: 580px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.reviews-below { margin-top: 0; }
+
+.btn-load-more {
+    appearance: none;
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 12px;
+    color: var(--text);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 11px 28px;
+    transition: background .2s, border-color .2s;
+}
+
+.btn-load-more:hover {
+    background: rgba(255,255,255,.1);
+    border-color: rgba(255,255,255,.2);
+}
+
+.review-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.form-label-note {
+    font-size: 11px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    opacity: .6;
+}
+
+.form-group input,
+.form-group textarea {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 15px;
+    padding: 12px 14px;
+    outline: none;
+    resize: vertical;
+    transition: border-color .2s, background .2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--acc);
+    background: rgba(255,255,255,.06);
+}
+
+/* Выбор аватарки */
+.avatar-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 12px;
+    background: rgba(255,255,255,.03);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 14px;
+    max-height: 180px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255,255,255,.1) transparent;
+}
+
+.avatar-pick-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: rgba(255,255,255,.06);
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color .15s, transform .12s, background .15s;
+    flex-shrink: 0;
+    overflow: hidden;
+}
+
+.avatar-pick-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
+.avatar-pick-btn svg {
+    width: 22px;
+    height: 22px;
+    stroke: var(--muted);
+}
+
+.avatar-pick-btn:hover { border-color: rgba(255,255,255,.3); transform: scale(1.08); }
+
+.avatar-pick-btn.is-selected {
+    border-color: var(--acc);
+    box-shadow: 0 0 0 3px rgba(0,198,255,.2);
+}
+
+/* Выбор звёзд */
+.star-picker { display: flex; gap: 6px; }
+
+.star-pick-btn {
+    background: none;
+    border: none;
+    padding: 2px;
+    cursor: pointer;
+    line-height: 0;
+}
+
+.star-pick-btn .star { width: 30px; height: 30px; transition: transform .1s, fill .15s; }
+.star-pick-btn:hover .star,
+.star-pick-btn:focus .star { transform: scale(1.18); }
+
+/* Кнопка отправки */
+.btn {
+    appearance: none;
+    background: linear-gradient(135deg, var(--acc2), var(--acc));
+    border: none;
+    border-radius: 12px;
+    color: #061024;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    padding: 13px 28px;
+    align-self: flex-start;
+    transition: opacity .2s, transform .15s;
+}
+
+.btn:hover { opacity: .88; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+/* Сообщение */
+.review-msg {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 14px;
+    border-radius: 10px;
+}
+
+.review-msg--ok { background: rgba(34,197,94,.12); color: var(--ok); }
+.review-msg--error { background: rgba(239,68,68,.12); color: #f87171; }
+
+@media (max-width: 900px) {
+    .review-form-wrap { max-width: 100%; }
+}
+
+@media (max-width: 600px) {
+    .review-form-wrap { padding: 18px; }
+    .reviews-list { grid-template-columns: 1fr; }
+    .avatar-picker { max-height: 140px; }
+    #reviews { overflow-x: hidden; }
+}
