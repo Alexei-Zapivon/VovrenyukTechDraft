@@ -179,7 +179,9 @@ nav a {
     grid-template-columns: 1.2fr .8fr;
     gap: 28px;
     align-items: center;
-    padding: 56px 0
+    padding: 56px 0;
+    position: relative;
+    overflow: hidden;
 }
 
 h1 {
@@ -188,6 +190,7 @@ h1 {
     margin: 16px 0 10px;
     background: linear-gradient(90deg, var(--acc2), var(--acc));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent
 }
 
@@ -698,14 +701,14 @@ section {
 }
 
 .btn-contact--telegram {
-    border-color: #2f4c7f;
-    background: linear-gradient(135deg, rgba(31, 61, 122, .9), rgba(35, 92, 170, .95));
-    color: #d9e7ff;
+    border-color: #1a8fc4;
+    background: linear-gradient(135deg, #2AABEE, #1a8fc4);
+    color: #fff;
 }
 
 .btn-contact--telegram:hover {
-    background: linear-gradient(135deg, rgba(45, 85, 150, 1), rgba(53, 114, 190, 1));
-    border-color: #3566b7;
+    background: linear-gradient(135deg, #3bbcf8, #2AABEE);
+    border-color: #2AABEE;
 }
 
 .btn-contact--whatsapp {
@@ -1232,5 +1235,78 @@ html.mobile-open .mobile-backdrop {
     .burger {
         display: inline-flex;
     }
+}
+
+/* ===== AURORA ===== */
+main {
+    position: relative;
+    z-index: 1;
+}
+
+.aurora {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.aurora__orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    will-change: transform;
+    animation: orbFloat ease-in-out infinite alternate;
+}
+
+.aurora__orb--1 {
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle at center, rgba(122,92,255,.22), transparent 70%);
+    top: -200px;
+    left: -150px;
+    animation-duration: 18s;
+}
+
+.aurora__orb--2 {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle at center, rgba(0,198,255,.17), transparent 70%);
+    top: 30%;
+    right: -150px;
+    animation-duration: 24s;
+    animation-delay: -10s;
+}
+
+.aurora__orb--3 {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle at center, rgba(122,92,255,.14), transparent 70%);
+    bottom: 0;
+    left: 15%;
+    animation-duration: 30s;
+    animation-delay: -18s;
+}
+
+@keyframes orbFloat {
+    0%   { transform: translate(0, 0) scale(1); }
+    100% { transform: translate(50px, -70px) scale(1.1); }
+}
+
+/* ===== HERO DECO ===== */
+.hero > * {
+    position: relative;
+    z-index: 1;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle, rgba(255,255,255,.04) 1px, transparent 1px);
+    background-size: 28px 28px;
+    pointer-events: none;
+    z-index: 0;
+    mask-image: linear-gradient(to right, transparent 0%, rgba(0,0,0,.6) 30%, rgba(0,0,0,.6) 70%, transparent 100%);
 }
 

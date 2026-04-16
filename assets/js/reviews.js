@@ -5,6 +5,12 @@
     const AVATAR_PATH = '/assets/img/avatar/';
     const LIMIT = 9;
 
+    const fadeObserver = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); fadeObserver.unobserve(e.target); }
+        });
+    }, { threshold: 0.1 });
+
     let currentOffset = 0;
     let totalReviews = 0;
 
@@ -70,6 +76,7 @@
 
         if (!append) list.innerHTML = '';
         list.insertAdjacentHTML('beforeend', reviews.map(cardHtml).join(''));
+        list.querySelectorAll('.review-card:not(.visible)').forEach(el => fadeObserver.observe(el));
         updateMoreBtn();
     }
 
