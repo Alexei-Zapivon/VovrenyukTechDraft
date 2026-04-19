@@ -36,6 +36,7 @@
     }
 
     function cardHtml(r) {
+        const long = r.text.length > 200;
         return `<div class="review-card fade-up">
             <div class="review-card__head">
                 ${avatarHtml(r.avatar, r.name)}
@@ -46,6 +47,7 @@
                 <span class="review-card__date muted">${r.date}</span>
             </div>
             <p class="review-card__text">${r.text}</p>
+            ${long ? `<button class="review-card__more" type="button">Читать далее</button>` : ''}
         </div>`;
     }
 
@@ -255,11 +257,22 @@
         setTimeout(() => { el.hidden = true; }, 4000);
     }
 
+    function initExpandButtons() {
+        document.getElementById('reviewsList').addEventListener('click', e => {
+            const btn = e.target.closest('.review-card__more');
+            if (!btn) return;
+            const text = btn.previousElementSibling;
+            text.classList.add('is-expanded');
+            btn.remove();
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         loadReviews(0, false);
         initLoadMore();
         initAvatarPicker();
         initStarPicker();
         initForm();
+        initExpandButtons();
     });
 })();

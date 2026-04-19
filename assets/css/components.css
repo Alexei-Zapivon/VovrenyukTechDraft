@@ -107,7 +107,7 @@
 
 .reviews-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: 1fr;
     gap: 16px;
     margin-bottom: 40px;
 }
@@ -164,6 +164,28 @@
     font-size: 14px;
     line-height: 1.65;
     color: var(--text);
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    transition: none;
+}
+
+.review-card__text.is-expanded {
+    display: block;
+    overflow: visible;
+}
+
+.review-card__more {
+    background: none;
+    border: none;
+    color: var(--acc);
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 4px 0 0;
+    align-self: flex-start;
 }
 
 /* Аватар в карточке */
@@ -203,8 +225,8 @@
 /* Форма */
 .reviews-layout {
     display: grid;
-    grid-template-columns: 400px 1fr;
-    gap: 24px;
+    grid-template-columns: 360px 1fr;
+    gap: 28px;
     align-items: start;
 }
 
