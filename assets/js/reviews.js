@@ -213,7 +213,9 @@
         sp.querySelectorAll('.star').forEach(s => s.classList.remove('star--on'));
 
         document.getElementById('reviewName').value = '';
-        document.getElementById('reviewText').value = '';
+        const ta = document.getElementById('reviewText');
+        ta.value = '';
+        ta.style.height = '';
     }
 
     function initForm() {
