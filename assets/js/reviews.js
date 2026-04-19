@@ -36,7 +36,6 @@
     }
 
     function cardHtml(r) {
-        const long = r.text.length > 200;
         return `<div class="review-card fade-up">
             <div class="review-card__head">
                 ${avatarHtml(r.avatar, r.name)}
@@ -47,8 +46,18 @@
                 <span class="review-card__date muted">${r.date}</span>
             </div>
             <p class="review-card__text">${r.text}</p>
-            ${long ? `<button class="review-card__more" type="button">Читать далее</button>` : ''}
+            <button class="review-card__more" type="button" hidden>Читать далее</button>
         </div>`;
+    }
+
+    function checkClamped(list) {
+        list.querySelectorAll('.review-card').forEach(card => {
+            const text = card.querySelector('.review-card__text');
+            const btn  = card.querySelector('.review-card__more');
+            if (btn && text.scrollHeight > text.clientHeight + 2) {
+                btn.hidden = false;
+            }
+        });
     }
 
     function updateMoreBtn() {
@@ -92,6 +101,7 @@
         if (!append) list.innerHTML = '';
         list.insertAdjacentHTML('beforeend', reviews.map(cardHtml).join(''));
         list.querySelectorAll('.review-card:not(.visible)').forEach(el => fadeObserver.observe(el));
+        checkClamped(list);
         updateMoreBtn();
     }
 
@@ -209,6 +219,12 @@
     function initForm() {
         const form = document.getElementById('reviewForm');
         if (!form) return;
+
+        const ta = document.getElementById('reviewText');
+        ta.addEventListener('input', () => {
+            ta.style.height = 'auto';
+            ta.style.height = ta.scrollHeight + 'px';
+        });
 
         form.addEventListener('submit', async e => {
             e.preventDefault();

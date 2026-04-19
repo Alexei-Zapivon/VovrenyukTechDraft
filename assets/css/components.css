@@ -332,7 +332,8 @@
     font-size: 15px;
     padding: 12px 14px;
     outline: none;
-    resize: vertical;
+    resize: none;
+    overflow: hidden;
     transition: border-color .2s, background .2s;
 }
 
