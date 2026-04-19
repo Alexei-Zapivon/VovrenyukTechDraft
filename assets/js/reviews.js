@@ -62,11 +62,24 @@
         }
     }
 
+    function renderSummary(total, avg) {
+        const wrap  = document.getElementById('reviewsSummary');
+        if (!wrap || !total) return;
+        document.getElementById('summaryScore').textContent = avg.toFixed(1);
+        document.getElementById('summaryStars').innerHTML = starsHtml(Math.round(avg));
+        document.getElementById('summaryCount').textContent = `${total} ${
+            total % 10 === 1 && total % 100 !== 11 ? 'отзыв' :
+            [2,3,4].includes(total % 10) && ![12,13,14].includes(total % 100) ? 'отзыва' : 'отзывов'
+        }`;
+        wrap.hidden = false;
+    }
+
     function renderReviews(data, append) {
         const list = document.getElementById('reviewsList');
         const reviews = data.reviews || [];
         totalReviews  = data.total || 0;
         currentOffset = (data.offset || 0) + reviews.length;
+        if (!append) renderSummary(totalReviews, data.avg_stars || 0);
 
         if (!append && !reviews.length) {
             list.innerHTML = '<p class="muted reviews-empty">Пока отзывов нет - будьте первым!</p>';

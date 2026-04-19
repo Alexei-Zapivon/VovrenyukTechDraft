@@ -221,6 +221,35 @@
 
 .reviews-below { margin-top: 0; }
 
+.reviews-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 14px 18px;
+    background: var(--card);
+    border: 1px solid #222949;
+    border-radius: 14px;
+}
+
+.reviews-summary__score {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1;
+}
+
+.reviews-summary__stars {
+    display: flex;
+    gap: 2px;
+}
+
+.reviews-summary__count {
+    font-size: 13px;
+    color: var(--muted);
+    margin-left: 4px;
+}
+
 .btn-load-more {
     appearance: none;
     background: rgba(255,255,255,.06);

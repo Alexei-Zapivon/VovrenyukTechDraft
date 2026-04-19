@@ -41,11 +41,13 @@ if ($method === 'GET') {
     $limit    = 9;
     $offset   = max(0, (int)($_GET['offset'] ?? 0));
     $page     = array_slice($reviews, $offset, $limit);
+    $avgStars = $total > 0 ? round(array_sum(array_column($reviews, 'stars')) / $total, 1) : 0;
     echo json_encode([
-        'reviews' => $page,
-        'total'   => $total,
-        'offset'  => $offset,
-        'limit'   => $limit,
+        'reviews'   => $page,
+        'total'     => $total,
+        'offset'    => $offset,
+        'limit'     => $limit,
+        'avg_stars' => $avgStars,
     ], JSON_UNESCAPED_UNICODE);
     exit;
 }

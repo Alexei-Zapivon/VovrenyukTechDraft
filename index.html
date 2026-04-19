@@ -535,7 +535,11 @@
             </div>
 
             <div class="reviews-below">
-                <h3 class="fade-up" style="margin:0 0 20px">Отзывы</h3>
+                <div class="reviews-summary fade-up" id="reviewsSummary" hidden>
+                    <span class="reviews-summary__score" id="summaryScore"></span>
+                    <span class="reviews-summary__stars" id="summaryStars"></span>
+                    <span class="reviews-summary__count" id="summaryCount"></span>
+                </div>
                 <div class="reviews-list" id="reviewsList"></div>
                 <div id="reviewsMore" hidden style="text-align:center;margin-top:16px">
                     <button class="btn-load-more" id="loadMoreBtn" type="button">Загрузить ещё</button>
