@@ -201,14 +201,22 @@
 .star--on { fill: #fbbf24; stroke: #f59e0b; }
 
 /* Форма */
+.reviews-layout {
+    display: grid;
+    grid-template-columns: 400px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
 .review-form-wrap {
     background: var(--card);
     border: 1px solid #222949;
     border-radius: 18px;
     padding: 28px;
-    max-width: 580px;
     width: 100%;
     box-sizing: border-box;
+    position: sticky;
+    top: 90px;
 }
 
 .reviews-below { margin-top: 0; }
@@ -383,7 +391,8 @@
 .review-msg--error { background: rgba(239,68,68,.12); color: #f87171; }
 
 @media (max-width: 900px) {
-    .review-form-wrap { max-width: 100%; }
+    .reviews-layout { grid-template-columns: 1fr; }
+    .review-form-wrap { position: static; }
 }
 
 @media (max-width: 600px) {
