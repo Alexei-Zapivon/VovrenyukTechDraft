@@ -325,12 +325,22 @@ function vtd_migrate_legacy(): void
                 'text'     => html_entity_decode((string) ($r['text'] ?? ''), ENT_QUOTES, 'UTF-8'),
                 'avatar'   => vtd_valid_avatar((string) ($r['avatar'] ?? '')),
                 'date'     => (string) ($r['date'] ?? date('d.m.Y')),
-                'ts'       => (int) ($r['ts'] ?? time()),
+                // у старых записей нет метки времени: берём её из даты «дд.мм.гггг», чтобы порядок остался хронологическим
+                'ts'       => (int) ($r['ts'] ?? (vtd_legacy_ts((string) ($r['date'] ?? '')) ?: time())),
                 'approved' => true,
             ];
         }
         vtd_write('reviews', $new);
     });
+}
+
+function vtd_legacy_ts(string $date): int
+{
+    if (!preg_match('/^(\d{2})\.(\d{2})\.(\d{4})$/', $date, $m)) {
+        return 0;
+    }
+    $ts = mktime(12, 0, 0, (int) $m[2], (int) $m[1], (int) $m[3]);
+    return $ts === false ? 0 : $ts;
 }
 
 function vtd_reviews_public(array $all): array

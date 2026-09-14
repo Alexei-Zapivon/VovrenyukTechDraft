@@ -14,3 +14,4 @@ Thumbs.db
 # сборка 3D-вьюера
 viewer/node_modules/
 models/model_raw.glb
+data/reviews.json
