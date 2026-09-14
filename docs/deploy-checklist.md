@@ -57,8 +57,8 @@ Jivo вставляет свой код inline-скриптом, поэтому 
 3. Залейте новые файлы. Нужны: `index.html`, `.htaccess`, `robots.txt`, `sitemap.xml`, `favicon.ico`,
    `apple-touch-icon.png`, папки `assets/`, `images/`, `api/`, `admin/`, `data/.htaccess`, `models/model.glb`.
    Не нужны на сервере: `.git/`, `viewer/`, `tools/`, `docs/`, `models/model.stl`, `models/model_raw.glb`.
-4. Старые файлы сайта, которых нет в новой версии (например, `assets/js/three-scene.js`, `images/hero/engineer.jpg`),
-   можно удалить: на них больше ничего не ссылается.
+4. Старые файлы сайта, которых нет в новой версии (например, `assets/js/three-scene.js`), можно удалить.
+   `images/hero/engineer.jpg` теперь исходник для `tools/photo.py`, страница его не запрашивает: на сервер можно не заливать.
 5. `data/reviews.json` с сервера оставьте на месте (или положите заново), `data/rate_limit.json` удалите:
    в новой версии другой формат и другой секрет, старые записи бесполезны.
 6. Откройте `/admin/`, задайте пароль. Этот первый запрос импортирует старые отзывы: во вкладке
