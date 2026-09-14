@@ -42,6 +42,7 @@
             <nav class="nav-links">
                 <a href="#services">Услуги</a>
                 <a href="#process">Процесс</a>
+                <a href="#estimate">Сроки</a>
                 <a href="#portfolio">Примеры</a>
                 <a href="#contacts">Контакты</a>
                 <a href="#reviews">Отзывы</a>
@@ -89,6 +90,7 @@
             <nav class="mobile-nav">
                 <a href="#services">Услуги</a>
                 <a href="#process">Процесс</a>
+                <a href="#estimate">Сроки</a>
                 <a href="#portfolio">Примеры</a>
                 <a href="#contacts">Контакты</a>
                 <a href="#reviews">Отзывы</a>
@@ -323,6 +325,77 @@
                 <div class="card fade-up">
                     <h3>Сроки</h3>
                     <p class="muted">Этапы и дедлайны фиксируем заранее.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="estimate">
+            <h2>Оценка сроков</h2>
+            <p class="section-sub">Без ТЗ точных цифр не бывает. Зато можно прикинуть баланс: подвиньте ползунки и получите ориентир по срокам и составу работ.</p>
+            <div class="estimate">
+                <div class="estimate__controls card">
+                    <div class="est-field">
+                        <div class="est-field__head">
+                            <label class="est-field__label" for="estComplexity">Сложность изделия</label>
+                            <output class="est-field__value" id="estComplexityValue" for="estComplexity">Сборка</output>
+                        </div>
+                        <input class="est-range" id="estComplexity" type="range" min="0" max="2" step="1" value="1" aria-describedby="estComplexityHint">
+                        <div class="est-ticks" id="estComplexityTicks" aria-hidden="true"><span>Деталь</span><span>Сборка</span><span>Комплект</span></div>
+                        <p class="est-hint" id="estComplexityHint"></p>
+                    </div>
+                    <div class="est-field">
+                        <div class="est-field__head">
+                            <label class="est-field__label" for="estDepth">Глубина проработки</label>
+                            <output class="est-field__value" id="estDepthValue" for="estDepth">Расширенный</output>
+                        </div>
+                        <input class="est-range" id="estDepth" type="range" min="0" max="2" step="1" value="1" aria-describedby="estDepthHint">
+                        <div class="est-ticks" id="estDepthTicks" aria-hidden="true"><span>Базовый</span><span>Расширенный</span><span>Максимальный</span></div>
+                        <p class="est-hint" id="estDepthHint"></p>
+                    </div>
+                    <div class="est-field">
+                        <div class="est-field__head">
+                            <label class="est-field__label" for="estUrgency">Срочность</label>
+                            <output class="est-field__value" id="estUrgencyValue" for="estUrgency">Обычный</output>
+                        </div>
+                        <input class="est-range" id="estUrgency" type="range" min="0" max="2" step="1" value="0" aria-describedby="estUrgencyHint">
+                        <div class="est-ticks" id="estUrgencyTicks" aria-hidden="true"><span>Обычный</span><span>Ускоренный</span><span>Срочно</span></div>
+                        <p class="est-hint" id="estUrgencyHint"></p>
+                    </div>
+                </div>
+
+                <div class="estimate__result card" aria-live="polite">
+                    <div class="est-result__head">
+                        <span class="est-result__label">Ориентировочный срок</span>
+                        <div class="est-result__days">
+                            <strong id="estDays">8–16</strong>
+                            <span>рабочих дней</span>
+                        </div>
+                    </div>
+                    <div class="est-level" id="estLevel" data-level="standard">
+                        <span class="est-level__stamp" id="estLevelName">Стандарт</span>
+                        <span class="est-level__desc" id="estLevelDesc"></span>
+                    </div>
+                    <h3 class="est-result__title">Состав работ</h3>
+                    <ul class="est-docs" id="estDocs"></ul>
+                    <p class="est-note">Это ориентир, а не оферта: точный срок и стоимость назову после знакомства с ТЗ.</p>
+                    <div class="est-actions">
+                        <a class="btn-contact btn-contact--telegram" id="estTelegram" href="https://t.me/Konstruktor_Mikhail" target="_blank" rel="noopener noreferrer">
+                            <img src="/assets/img/Telegram.svg" class="btn-contact__icon" alt="" loading="lazy" />
+                            <span>Отправить в Telegram</span>
+                        </a>
+                        <a class="btn-contact btn-contact--whatsapp" id="estWhatsApp" href="https://wa.me/79515256278" target="_blank" rel="noopener noreferrer">
+                            <img src="/assets/img/WhatsApp.svg" class="btn-contact__icon" alt="" loading="lazy" />
+                            <span>WhatsApp</span>
+                        </a>
+                        <a class="btn-contact" id="estEmail" href="mailto:vovrenyuk_work@rambler.ru">
+                            <svg aria-hidden="true" viewBox="0 0 24 24" class="btn-contact__icon">
+                                <rect x="3" y="5" width="18" height="14" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="1.6" />
+                                <path d="M4 7l8 6 8-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <span>Письмом</span>
+                        </a>
+                        <button class="btn-contact" id="estCopy" type="button">Скопировать расчёт</button>
+                    </div>
                 </div>
             </div>
         </section>

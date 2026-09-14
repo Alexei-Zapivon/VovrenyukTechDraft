@@ -1,6 +1,8 @@
 import { initUI } from "./ui.js";
+import { initEstimate } from "./estimate.js";
 
 initUI();
+initEstimate();
 
 /* 3D-вьюер (three.js ~165 КБ gzip + модель ~250 КБ) грузится после страницы, чтобы не мешать
    первому экрану. При включённой экономии трафика или медленной сети показываем кнопку. */
