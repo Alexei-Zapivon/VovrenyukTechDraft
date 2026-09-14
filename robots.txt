@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /data/
+Disallow: /tools/
+Disallow: /viewer/
+
+Sitemap: https://vovrenyuk.ru/sitemap.xml

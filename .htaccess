@@ -34,3 +34,26 @@
     AddType model/gltf-binary .glb
     AddType font/woff2 .woff2
 </IfModule>
+
+# Кэширование статики. HTML не кэшируется, CSS и JS обновляются в течение часа,
+# шрифты, картинки и модель живут долго (при замене файла меняйте имя или ждите срок).
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType text/css "access plus 1 hour"
+    ExpiresByType application/javascript "access plus 1 hour"
+    ExpiresByType text/javascript "access plus 1 hour"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/x-icon "access plus 30 days"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType model/gltf-binary "access plus 7 days"
+</IfModule>
+
+# Сжатие текстовых ответов, если хостинг не делает этого сам
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript text/javascript application/json image/svg+xml
+</IfModule>
+
