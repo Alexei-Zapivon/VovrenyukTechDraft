@@ -123,16 +123,11 @@
                 <div id="modelWrap" class="viewer">
                     <span class="viewer-caption" aria-hidden="true">Интерактивная 3D-модель</span>
                     <canvas id="modelCanvas"></canvas>
-                    <p id="viewerStatus" class="viewer-status" role="status" hidden></p>
+                    <p id="viewerStatus" class="viewer-status" role="status"><span class="viewer-spinner" aria-hidden="true"></span><span id="viewerStatusText">Загрузка 3D-модели</span></p>
                     <button id="viewerLoad" class="viewer-load" type="button" hidden>Показать 3D-модель · ≈250 КБ</button>
                     <p id="viewerDims" class="viewer-dims" hidden></p>
                 </div>
                 <div class="viewer-controls">
-                    <label for="explode" class="range-control">
-                        <span class="range-label">Разборка</span>
-                        <input id="explode" type="range" min="0" max="100" value="0">
-                        <span id="explodeValue" class="range-value">0%</span>
-                    </label>
                     <label for="section" class="range-control">
                         <span class="range-label">Сечение</span>
                         <input id="section" type="range" min="0" max="100" value="0">
@@ -157,7 +152,10 @@
         <section id="about">
             <div class="about card">
                 <div class="photo">
-                    <img src="./images/hero/engineer.jpg" alt="Ведущий инженер-конструктор" loading="lazy">
+                    <picture>
+                        <source type="image/webp" srcset="/images/hero/engineer-640.webp 640w, /images/hero/engineer-1280.webp 1280w" sizes="(max-width: 900px) 320px, 300px">
+                        <img src="/images/hero/engineer-640.jpg" srcset="/images/hero/engineer-640.jpg 640w, /images/hero/engineer-1280.jpg 1280w" sizes="(max-width: 900px) 320px, 300px" width="640" height="800" alt="Ведущий инженер-конструктор" loading="lazy" decoding="async">
+                    </picture>
                 </div>
                 <div>
                     <h2>Ведущий инженер-конструктор</h2>

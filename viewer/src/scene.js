@@ -3,7 +3,8 @@
  * assets/js/viewer.bundle.js (cd viewer && npm run build).
  *
  * Режимы: рендер, каркас, чертёж (ортографическая камера, только видимые рёбра).
- * Слайдеры: разборка (смещение по нормалям), сечение (плоскость отсечения по высоте).
+ * Слайдер сечения: плоскость отсечения по высоте. Разборка убрана: на цельном теле она
+ * выглядит как раздувание; вернётся, когда появится модель из отдельных деталей.
  * Кнопки видов: спереди, сверху, слева, изометрия.
  * Рендер идёт только пока панель видна на экране и вкладка активна.
  */
@@ -27,7 +28,7 @@ const VIEWS = {
     iso: new Vector3(1, 0.8, 1),
 };
 
-export function initViewer() {
+export function initViewer(opts = {}) {
     const wrap = document.getElementById('modelWrap');
     const canvas = document.getElementById('modelCanvas');
     if (!wrap || !canvas) return null;
@@ -35,8 +36,7 @@ export function initViewer() {
     const $ = id => document.getElementById(id);
     const ui = {
         status: $('viewerStatus'),
-        explode: $('explode'),
-        explodeValue: $('explodeValue'),
+        statusText: $('viewerStatusText'),
         section: $('section'),
         sectionValue: $('sectionValue'),
         modes: { solid: $('viewSolid'), wire: $('viewWire'), draw: $('viewDraw') },
@@ -79,16 +79,9 @@ export function initViewer() {
 
     /* ---------- материалы ---------- */
     const clipPlane = new Plane(new Vector3(0, -1, 0), 1e6);   // всё, что выше constant, отсекается
-    const explodeUniform = { value: 0 };
     const solidMat = new MeshStandardMaterial({
         color: 0xb4c7ec, metalness: 0.5, roughness: 0.4, side: DoubleSide, clippingPlanes: [clipPlane],
     });
-    solidMat.onBeforeCompile = shader => {
-        shader.uniforms.uExplode = explodeUniform;
-        shader.vertexShader = shader.vertexShader
-            .replace('#include <common>', '#include <common>\nuniform float uExplode;')
-            .replace('#include <begin_vertex>', '#include <begin_vertex>\ntransformed += normalize(objectNormal) * uExplode;');
-    };
     const occluderMat = new MeshBasicMaterial({
         color: BLUEPRINT, side: DoubleSide, polygonOffset: true, polygonOffsetFactor: 1, polygonOffsetUnits: 1, clippingPlanes: [clipPlane],
     });
@@ -99,12 +92,14 @@ export function initViewer() {
     scene.add(group);
     const state = {
         mesh: null, occluder: null, edges: null,
-        mode: 'solid', radius: 1, dist: 3, explodeMax: 0, minY: -1, maxY: 1, loaded: false,
+        mode: 'solid', radius: 1, dist: 3, minY: -1, maxY: 1, loaded: false,
     };
 
-    function setStatus(text) {
+    function setStatus(text, isError = false) {
         if (!ui.status) return;
-        ui.status.textContent = text || '';
+        if (ui.statusText) ui.statusText.textContent = text || '';
+        else ui.status.textContent = text || '';
+        ui.status.classList.toggle('is-error', isError);
         ui.status.hidden = !text;
     }
 
@@ -214,17 +209,9 @@ export function initViewer() {
         if (state.occluder) state.occluder.visible = draw;
         useCamera(draw ? ortho : persp);
         if (draw) setView('front', ortho);
-        // на чертеже разборка не имеет смысла: сбрасываем и блокируем
-        if (draw) { setExplode(0); if (ui.explode) ui.explode.value = '0'; }
-        if (ui.explode) ui.explode.disabled = draw;
         Object.entries(ui.modes).forEach(([k, b]) => b && b.classList.toggle('is-active', k === mode));
         wrap.classList.toggle('is-draw', draw);
         if (ui.dims) ui.dims.hidden = !draw || !state.loaded;
-    }
-
-    function setExplode(pct) {
-        if (ui.explodeValue) ui.explodeValue.textContent = `${Math.round(pct)}%`;
-        explodeUniform.value = (pct / 100) * state.explodeMax;
     }
 
     function setSection(pct) {
@@ -239,11 +226,7 @@ export function initViewer() {
         gltf.scene.traverse(o => { if (o.isMesh && !mesh) mesh = o; });
         if (!mesh) { setStatus('В модели нет геометрии'); return; }
         mesh.material = solidMat;
-        // без нормалей шейдер разборки получит NaN, а освещение будет плоским
         if (!mesh.geometry.attributes.normal) mesh.geometry.computeVertexNormals();
-        mesh.geometry.computeBoundingBox();
-        const local = mesh.geometry.boundingBox.getSize(new Vector3());
-        state.explodeMax = local.length() * 0.12;
 
         gltf.scene.rotation.x = MODEL_ROTATION_X;
         group.add(gltf.scene);
@@ -261,7 +244,6 @@ export function initViewer() {
         state.loaded = true;
         fitCameras();
         setSection(Number(ui.section ? ui.section.value : 0));
-        setExplode(Number(ui.explode ? ui.explode.value : 0));
         if (ui.dims) {
             const mm = v => Math.round(v);
             ui.dims.textContent = `Габариты ${mm(size.z)} × ${mm(size.x)} × ${mm(size.y)} мм`;
@@ -273,16 +255,41 @@ export function initViewer() {
 
     const loader = new GLTFLoader();
     loader.setMeshoptDecoder(MeshoptDecoder);
-    setStatus('Загрузка модели…');
-    loader.load(
-        MODEL_URL,
-        onModel,
-        xhr => { if (xhr.total) setStatus(`Загрузка модели ${Math.round((xhr.loaded / xhr.total) * 100)}%`); },
-        err => { console.warn('viewer: model load failed', err); setStatus('Не удалось загрузить модель'); },
-    );
+    const onError = err => { console.warn('viewer: model load failed', err); setStatus('Не удалось загрузить модель', true); };
+    const progress = (loaded, total) => setStatus(total ? `Загрузка модели ${Math.round((loaded / total) * 100)}%` : 'Загрузка модели');
+
+    // main.js начинает качать модель одновременно с кодом вьюера и передаёт сюда промис ответа
+    async function readWithProgress(resp) {
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const total = Number(resp.headers.get('content-length')) || 0;
+        if (!resp.body || !total) { progress(0, 0); return resp.arrayBuffer(); }
+        const reader = resp.body.getReader();
+        const chunks = [];
+        let got = 0;
+        for (;;) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            chunks.push(value);
+            got += value.length;
+            progress(got, total);
+        }
+        const buf = new Uint8Array(got);
+        let off = 0;
+        for (const c of chunks) { buf.set(c, off); off += c.length; }
+        return buf.buffer;
+    }
+
+    setStatus('Загрузка модели');
+    if (opts.model) {
+        Promise.resolve(opts.model)
+            .then(readWithProgress)
+            .then(buf => loader.parse(buf, MODEL_URL.replace(/[^/]+$/, ''), onModel, onError))
+            .catch(onError);
+    } else {
+        loader.load(MODEL_URL, onModel, xhr => progress(xhr.loaded, xhr.total), onError);
+    }
 
     /* ---------- события ---------- */
-    ui.explode?.addEventListener('input', e => setExplode(Number(e.target.value)));
     ui.section?.addEventListener('input', e => setSection(Number(e.target.value)));
     ui.modes.solid?.addEventListener('click', () => setMode('solid'));
     ui.modes.wire?.addEventListener('click', () => setMode('wire'));
@@ -290,5 +297,5 @@ export function initViewer() {
     ui.views.forEach(b => b.addEventListener('click', () => setView(b.dataset.view)));
     setMode('solid');
 
-    return { setMode, setView, setExplode, setSection };
+    return { setMode, setView, setSection };
 }
