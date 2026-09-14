@@ -1,135 +1,158 @@
 <?php
-header('Content-Type: application/json; charset=utf-8');
-header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type');
+/**
+ * API отзывов.
+ *   GET  /api/reviews.php?offset=N      — опубликованные отзывы постранично + токен формы
+ *   GET  /api/reviews.php?action=token  — новый токен формы
+ *   POST /api/reviews.php               — новый отзыв (уходит в очередь на модерацию)
+ */
+declare(strict_types=1);
 
-if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') { exit; }
+require __DIR__ . '/lib.php';
 
-$reviewsFile   = __DIR__ . '/../data/reviews.json';
-$rateLimitFile = __DIR__ . '/../data/rate_limit.json';
-$salt          = 'vtd_2026_secret';
-$allowedDomain = 'vovrenyuk.ru';
+vtd_api_headers();
+$method = (string) ($_SERVER['REQUEST_METHOD'] ?? 'GET');
 
-function readJson($file) {
-    if (!file_exists($file)) return [];
-    $data = json_decode(file_get_contents($file), true);
-    return is_array($data) ? $data : [];
-}
-
-function writeJson($file, $data) {
-    file_put_contents($file, json_encode($data, JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT), LOCK_EX);
-}
-
-function getIpHash($salt) {
-    $ip = $_SERVER['HTTP_X_FORWARDED_FOR'] ?? $_SERVER['REMOTE_ADDR'] ?? 'unknown';
-    $ip = trim(explode(',', $ip)[0]);
-    return hash('sha256', $salt . $ip);
-}
-
-function reject($code, $error, $message = '') {
-    http_response_code($code);
-    echo json_encode(['error' => $error, 'message' => $message], JSON_UNESCAPED_UNICODE);
+if ($method === 'OPTIONS') {
+    // CORS-заголовки намеренно не отдаём: кросс-доменные запросы браузер отклонит сам.
+    http_response_code(204);
     exit;
 }
 
-$method = $_SERVER['REQUEST_METHOD'];
+vtd_migrate_legacy();
 
-// GET — вернуть отзывы с пагинацией
 if ($method === 'GET') {
-    $reviews  = array_reverse(readJson($reviewsFile));
-    $total    = count($reviews);
-    $limit    = 9;
-    $offset   = max(0, (int)($_GET['offset'] ?? 0));
-    $page     = array_slice($reviews, $offset, $limit);
-    $avgStars = $total > 0 ? round(array_sum(array_column($reviews, 'stars')) / $total, 1) : 0;
-    echo json_encode([
-        'reviews'   => $page,
+    if ((string) ($_GET['action'] ?? '') === 'token') {
+        vtd_json(200, ['ok' => true, 'token' => vtd_token_issue()]);
+    }
+
+    $all    = array_reverse(vtd_reviews_public(vtd_read('reviews'))); // новые сверху
+    $total  = count($all);
+    $limit  = 9;
+    $offset = max(0, min((int) ($_GET['offset'] ?? 0), $total));
+    $avg    = $total > 0 ? round(array_sum(array_column($all, 'stars')) / $total, 1) : 0;
+
+    vtd_json(200, [
+        'ok'        => true,
+        'reviews'   => array_slice($all, $offset, $limit),
         'total'     => $total,
         'offset'    => $offset,
         'limit'     => $limit,
-        'avg_stars' => $avgStars,
-    ], JSON_UNESCAPED_UNICODE);
-    exit;
+        'avg_stars' => $avg,
+        'token'     => vtd_token_issue(),
+    ]);
 }
 
-// POST — добавить отзыв
-if ($method === 'POST') {
+if ($method !== 'POST') {
+    vtd_reject(405, 'method_not_allowed');
+}
 
-    // Проверка Referer — запрос должен идти с нашего сайта
-    $referer = $_SERVER['HTTP_REFERER'] ?? '';
-    if (!empty($referer) && strpos($referer, $allowedDomain) === false) {
-        reject(403, 'forbidden', 'Запрос отклонён');
+// Запрос должен прийти со страницы нашего сайта и из нашего скрипта.
+// Кастомный заголовок заставляет чужие сайты делать preflight, который без CORS не пройдёт.
+if (!vtd_same_origin() || (string) ($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') !== 'fetch') {
+    vtd_reject(403, 'forbidden', 'Запрос отклонён');
+}
+
+$raw = file_get_contents('php://input', false, null, 0, VTD_BODY_MAX + 1);
+if ($raw === false || strlen($raw) > VTD_BODY_MAX) {
+    vtd_reject(413, 'too_large', 'Слишком большой запрос');
+}
+$input = json_decode($raw, true);
+if (!is_array($input)) {
+    vtd_reject(400, 'invalid', 'Неверный формат');
+}
+
+// Honeypot: боту отвечаем «успех», ничего не сохраняя.
+if (!empty($input['website'])) {
+    vtd_json(200, ['ok' => true, 'pending' => true]);
+}
+
+// Токен формы: подписан секретом сервера, живёт 2 часа, отправка раньше 3 секунд отклоняется.
+$age = vtd_token_age((string) ($input['token'] ?? ''));
+if ($age === null) {
+    vtd_reject(400, 'token_invalid', 'Обновите страницу и попробуйте снова');
+}
+if ($age < VTD_TOKEN_MIN) {
+    vtd_reject(400, 'timing', 'Слишком быстро, попробуйте ещё раз');
+}
+if ($age > VTD_TOKEN_MAX) {
+    vtd_reject(400, 'expired', 'Форма устарела, обновите страницу');
+}
+
+$name   = vtd_clean_text((string) ($input['name'] ?? ''), false);
+$text   = vtd_clean_text((string) ($input['text'] ?? ''), true);
+$stars  = (int) ($input['stars'] ?? 0);
+$avatar = vtd_valid_avatar(trim((string) ($input['avatar'] ?? '')));
+
+$nameLen = mb_strlen($name);
+$textLen = mb_strlen($text);
+
+if ($nameLen < VTD_NAME_MIN || !preg_match('/\p{L}/u', $name)) {
+    vtd_reject(400, 'name', 'Укажите имя');
+}
+if ($nameLen > VTD_NAME_MAX) {
+    vtd_reject(400, 'name_long', 'Имя длиннее ' . VTD_NAME_MAX . ' символов');
+}
+if ($stars < 1 || $stars > 5) {
+    vtd_reject(400, 'stars', 'Выберите оценку');
+}
+if ($textLen < VTD_TEXT_MIN) {
+    vtd_reject(400, 'text', 'Отзыв слишком короткий, минимум ' . VTD_TEXT_MIN . ' символов');
+}
+if ($textLen > VTD_TEXT_MAX) {
+    vtd_reject(400, 'text_long', 'Отзыв длиннее ' . VTD_TEXT_MAX . ' символов');
+}
+if (vtd_has_link($name) || vtd_has_link($text)) {
+    vtd_reject(400, 'no_links', 'Ссылки в отзывах запрещены');
+}
+
+$ipHash = vtd_ip_hash();
+$now    = time();
+
+$result = vtd_locked(function () use ($ipHash, $now, $name, $text, $stars, $avatar): array {
+    $rate = array_filter(
+        vtd_read('rate_limit'),
+        static fn($ts) => is_int($ts) && ($now - $ts) < VTD_RATE_WINDOW
+    );
+    if (isset($rate[$ipHash])) {
+        return [429, 'rate_limit', 'Отзыв можно оставить раз в сутки'];
     }
 
-    $input = json_decode(file_get_contents('php://input'), true);
-    if (!is_array($input)) {
-        reject(400, 'invalid', 'Неверный формат');
-    }
-
-    // Honeypot — боты заполняют скрытое поле
-    if (!empty($input['website'])) {
-        reject(400, 'spam');
-    }
-
-    // Проверка времени — форма должна быть открыта минимум 3 секунды
-    $loadedAt = (int)($input['loadedAt'] ?? 0);
-    $elapsed  = time() - intdiv($loadedAt, 1000);
-    if ($loadedAt === 0 || $elapsed < 3 || $elapsed > 7200) {
-        reject(400, 'timing', 'Отправка слишком быстрая или токен устарел');
-    }
-
-    // Фильтр ссылок в тексте
-    $text = trim($input['text'] ?? '');
-    if (preg_match('/(https?:\/\/|www\.)/i', $text)) {
-        reject(400, 'no_links', 'Ссылки в отзывах запрещены');
-    }
-
-    // Валидация полей
-    $name  = trim($input['name'] ?? '');
-    $stars = (int)($input['stars'] ?? 0);
-
-    if (empty($name) || $stars < 1 || $stars > 5 || empty($text)) {
-        reject(400, 'invalid', 'Заполните все поля');
-    }
-
-    // Валидация аватарки — только разрешённые файлы
-    $avatar = '';
-    $rawAvatar = trim($input['avatar'] ?? '');
-    if ($rawAvatar !== '') {
-        if (preg_match('/^avatar(0[1-9]|1[0-9]|20)\.png$/', $rawAvatar)) {
-            $avatar = $rawAvatar;
+    $reviews = vtd_read('reviews');
+    $pending = 0;
+    $recent  = 0;
+    foreach ($reviews as $r) {
+        if (empty($r['approved'])) {
+            $pending++;
+        }
+        if ((int) ($r['ts'] ?? 0) > $now - 3600) {
+            $recent++;
         }
     }
-
-    // Лимит по IP — 1 отзыв в 24 часа
-    $hash      = getIpHash($salt);
-    $rateLimit = readJson($rateLimitFile);
-    $now       = time();
-
-    $rateLimit = array_filter($rateLimit, fn($ts) => ($now - $ts) < 86400);
-
-    if (isset($rateLimit[$hash])) {
-        reject(429, 'rate_limit', 'Отзыв можно оставить раз в 24 часа');
+    if ($pending >= VTD_PENDING_MAX || $recent >= VTD_HOURLY_MAX) {
+        return [503, 'busy', 'Слишком много отзывов, попробуйте позже'];
     }
 
-    $rateLimit[$hash] = $now;
-    writeJson($rateLimitFile, $rateLimit);
-
-    // Сохраняем отзыв
-    $reviews   = readJson($reviewsFile);
     $reviews[] = [
-        'id'     => uniqid('r_', true),
-        'name'   => htmlspecialchars($name, ENT_QUOTES, 'UTF-8'),
-        'stars'  => $stars,
-        'text'   => htmlspecialchars($text, ENT_QUOTES, 'UTF-8'),
-        'avatar' => $avatar,
-        'date'   => date('d.m.Y'),
+        'id'       => bin2hex(random_bytes(8)),
+        'name'     => $name,
+        'stars'    => $stars,
+        'text'     => $text,
+        'avatar'   => $avatar,
+        'date'     => date('d.m.Y', $now),
+        'ts'       => $now,
+        'approved' => false,
     ];
-    writeJson($reviewsFile, $reviews);
+    if (!vtd_write('reviews', $reviews)) {
+        return [500, 'storage', 'Не удалось сохранить отзыв, попробуйте позже'];
+    }
 
-    echo json_encode(['ok' => true], JSON_UNESCAPED_UNICODE);
-    exit;
+    $rate[$ipHash] = $now;
+    vtd_write('rate_limit', $rate);
+    return [200, '', ''];
+});
+
+if ($result[0] !== 200) {
+    vtd_reject($result[0], $result[1], $result[2]);
 }
 
-http_response_code(405);
-echo json_encode(['error' => 'method_not_allowed']);
+vtd_json(200, ['ok' => true, 'pending' => true, 'message' => 'Спасибо! Отзыв появится на сайте после проверки']);

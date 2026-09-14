@@ -1,0 +1,12 @@
+# локальные настройки бэкенда
+api/config.php
+
+# данные отзывов и служебные файлы (создаются на сервере)
+data/*.json.php
+data/*.tmp
+data/.lock
+vtd-data/
+
+# системное
+.DS_Store
+Thumbs.db
