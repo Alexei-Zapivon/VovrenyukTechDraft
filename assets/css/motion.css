@@ -1,0 +1,288 @@
+/* =====================================================================
+   Движение в чертёжном духе. Без библиотек: CSS-анимации, один
+   IntersectionObserver в ui.js ставит класс .in-view. Всё внутри
+   @media (prefers-reduced-motion: no-preference): кому движение
+   мешает, тот видит статичную страницу.
+   ===================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+
+    @keyframes reveal-up {
+        from {
+            opacity: 0;
+            transform: translateY(18px);
+        }
+    }
+
+    @keyframes draw-stroke {
+        to {
+            stroke-dashoffset: 0;
+        }
+    }
+
+    @keyframes scan {
+        to {
+            transform: translateX(102%);
+        }
+    }
+
+    @keyframes rule-grow {
+        from {
+            transform: scaleX(0);
+        }
+        to {
+            transform: scaleX(1);
+        }
+    }
+
+    @keyframes frame-in {
+        from {
+            inset: 28px;
+            opacity: 0;
+        }
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 0 0 3px rgba(26, 138, 74, .18);
+        }
+        50% {
+            box-shadow: 0 0 0 6px rgba(26, 138, 74, .06);
+        }
+    }
+
+    /* ---------- порядок появления внутри группы ---------- */
+    :is(.grid, .cols, .print-grid, .gallery, .contacts-grid, .estimate, .reviews-layout) > :nth-child(2) { --i: 1; }
+    :is(.grid, .cols, .print-grid, .gallery, .contacts-grid, .estimate, .reviews-layout) > :nth-child(3) { --i: 2; }
+    :is(.grid, .cols, .print-grid, .gallery, .contacts-grid, .estimate, .reviews-layout) > :nth-child(4) { --i: 3; }
+    :is(.grid, .cols, .print-grid, .gallery, .contacts-grid, .estimate, .reviews-layout) > :nth-child(5) { --i: 4; }
+    :is(.grid, .cols, .print-grid, .gallery, .contacts-grid, .estimate, .reviews-layout) > :nth-child(6) { --i: 5; }
+    :is(.grid, .cols, .print-grid, .gallery, .contacts-grid, .estimate, .reviews-layout) > :nth-child(7) { --i: 6; }
+    :is(.grid, .cols, .print-grid, .gallery, .contacts-grid, .estimate, .reviews-layout) > :nth-child(8) { --i: 7; }
+    :is(.grid, .cols, .print-grid, .gallery, .contacts-grid, .estimate, .reviews-layout) > :nth-child(9) { --i: 8; }
+
+    /* ---------- появление блоков при прокрутке ---------- */
+    html.js :is(.grid, .cols, .print-grid, .contacts-grid, .estimate, .reviews-layout) > :not(.in-view),
+    html.js :is(.about, .hero-visual, .footer, .section-sub):not(.in-view),
+    html.js main > section > .card:not(.in-view) {
+        opacity: 0;
+    }
+
+    :is(.grid, .cols, .print-grid, .contacts-grid, .estimate, .reviews-layout) > .in-view,
+    :is(.about, .hero-visual, .footer, .section-sub).in-view,
+    main > section > .card.in-view {
+        animation: reveal-up .7s cubic-bezier(.22, 1, .36, 1) backwards;
+        animation-delay: calc(var(--i, 0) * 70ms);
+    }
+
+    /* ---------- заголовок раздела: номер листа и линия ---------- */
+    html.js main > section > h2::before {
+        opacity: 0;
+        transform: translateX(-8px);
+        transition: opacity .45s ease, transform .45s cubic-bezier(.22, 1, .36, 1);
+    }
+
+    html.js main > section > h2::after {
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 1s cubic-bezier(.22, 1, .36, 1) .1s;
+    }
+
+    html.js main > section > h2.in-view::before {
+        opacity: 1;
+        transform: none;
+    }
+
+    html.js main > section > h2.in-view::after {
+        transform: scaleX(1);
+    }
+
+    /* линия следует за прокруткой там, где браузер умеет scroll-driven animations */
+    @supports (animation-timeline: view()) {
+        html.js main > section > h2::after {
+            transition: none;
+            transform: none;
+            animation: rule-grow linear both;
+            animation-timeline: view();
+            animation-range: entry 0% cover 28%;
+        }
+    }
+
+    /* ---------- шкала прокрутки под шапкой ---------- */
+    @supports (animation-timeline: scroll()) {
+        .header::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: -1px;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+            transform-origin: left;
+            transform: scaleX(0);
+            animation: rule-grow linear both;
+            animation-timeline: scroll(root);
+            pointer-events: none;
+        }
+    }
+
+    /* ---------- hero: элементы по очереди, рамка вьюера ---------- */
+    html.js .hero > div:first-child > * {
+        animation: reveal-up .6s cubic-bezier(.22, 1, .36, 1) backwards;
+    }
+
+    html.js .hero > div:first-child > :nth-child(2) { animation-delay: .06s; }
+    html.js .hero > div:first-child > :nth-child(3) { animation-delay: .12s; }
+    html.js .hero > div:first-child > :nth-child(4) { animation-delay: .18s; }
+    html.js .hero > div:first-child > :nth-child(5) { animation-delay: .24s; }
+
+    html.js .kpi > div {
+        animation: reveal-up .5s cubic-bezier(.22, 1, .36, 1) backwards;
+        animation-delay: calc(.2s + var(--k, 0) * 60ms);
+    }
+
+    .kpi > :nth-child(2) { --k: 1; }
+    .kpi > :nth-child(3) { --k: 2; }
+    .kpi > :nth-child(4) { --k: 3; }
+    .kpi > :nth-child(5) { --k: 4; }
+
+    html.js .viewer::before {
+        animation: frame-in 1.1s cubic-bezier(.22, 1, .36, 1) .35s backwards;
+    }
+
+    .badge .i {
+        animation: pulse 2.6s ease-in-out infinite;
+    }
+
+    /* ---------- иконки руководства по печати рисуются штрихом ---------- */
+    html.js .print-icon svg :is(path, circle, rect) {
+        stroke-dasharray: 1;
+        stroke-dashoffset: 1;
+    }
+
+    .print-card.in-view .print-icon svg :is(path, circle, rect) {
+        animation: draw-stroke 1s cubic-bezier(.4, 0, .2, 1) forwards;
+        animation-delay: calc(.25s + var(--i, 0) * 120ms + var(--s, 0) * 180ms);
+    }
+
+    .print-icon svg > :nth-child(2) { --s: 1; }
+    .print-icon svg > :nth-child(3) { --s: 2; }
+    .print-icon svg > :nth-child(4) { --s: 3; }
+
+    .print-card .print-icon {
+        transition: transform .3s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .print-card:hover .print-icon {
+        transform: translateY(-3px) rotate(-4deg);
+    }
+
+    /* ---------- галерея: кадр «сканируется» ---------- */
+    html.js .gallery .cell::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        background: var(--paper);
+        border-left: 2px solid var(--accent);
+        pointer-events: none;
+    }
+
+    .gallery .cell.in-view::after {
+        animation: scan .9s cubic-bezier(.65, 0, .35, 1) forwards;
+        animation-delay: calc(var(--i, 0) * 90ms);
+    }
+
+    /* ---------- карточки: балун позиции и уголки при наведении ---------- */
+    .grid,
+    .cols {
+        counter-reset: pos;
+    }
+
+    :is(.grid, .cols) > .card:not(.print-card) {
+        counter-increment: pos;
+        position: relative;
+    }
+
+    :is(.grid, .cols) > .card:not(.print-card)::before {
+        content: counter(pos);
+        position: absolute;
+        top: -13px;
+        left: 18px;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        border: 1.5px solid var(--accent);
+        background: var(--surface);
+        color: var(--accent);
+        font: 600 11px/23px var(--font-mono);
+        text-align: center;
+        opacity: 0;
+        transform: translateY(6px) scale(.8);
+        transition: opacity .2s ease, transform .3s cubic-bezier(.34, 1.56, .64, 1);
+        pointer-events: none;
+    }
+
+    :is(.grid, .cols) > .card:not(.print-card)::after {
+        content: "";
+        position: absolute;
+        inset: -6px;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity .2s ease;
+        --m: var(--accent);
+        background:
+            linear-gradient(var(--m), var(--m)) top left / 12px 1.5px no-repeat,
+            linear-gradient(var(--m), var(--m)) top left / 1.5px 12px no-repeat,
+            linear-gradient(var(--m), var(--m)) top right / 12px 1.5px no-repeat,
+            linear-gradient(var(--m), var(--m)) top right / 1.5px 12px no-repeat,
+            linear-gradient(var(--m), var(--m)) bottom left / 12px 1.5px no-repeat,
+            linear-gradient(var(--m), var(--m)) bottom left / 1.5px 12px no-repeat,
+            linear-gradient(var(--m), var(--m)) bottom right / 12px 1.5px no-repeat,
+            linear-gradient(var(--m), var(--m)) bottom right / 1.5px 12px no-repeat;
+    }
+
+    :is(.grid, .cols) > .card:not(.print-card):hover::before,
+    :is(.grid, .cols) > .card:not(.print-card):focus-within::before {
+        opacity: 1;
+        transform: none;
+    }
+
+    :is(.grid, .cols) > .card:not(.print-card):hover::after,
+    :is(.grid, .cols) > .card:not(.print-card):focus-within::after {
+        opacity: 1;
+    }
+
+    /* ---------- мелкие микровзаимодействия ---------- */
+    .list li {
+        transition: transform .2s ease;
+    }
+
+    .card:hover .list li {
+        transform: translateX(2px);
+    }
+
+    .btn-contact__icon,
+    .icon-btn svg {
+        transition: transform .25s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .btn-contact:hover .btn-contact__icon,
+    .icon-btn:hover svg {
+        transform: scale(1.12);
+    }
+
+    .cta::after {
+        content: "→";
+        display: inline-block;
+        margin-left: 2px;
+        transition: transform .2s ease;
+    }
+
+    .cta:hover::after {
+        transform: translateX(3px);
+    }
+
+    .est-level__stamp {
+        animation: reveal-up .35s cubic-bezier(.34, 1.56, .64, 1) backwards;
+    }
+}

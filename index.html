@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="/assets/css/fonts.css">
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" href="/assets/css/components.css">
+    <link rel="stylesheet" href="/assets/css/motion.css">
     <meta name="description"
         content="Качественно и в срок: 3D-модели, чертежи по ЕСКД, спецификации, сопроводительная документация (ПС, РЭ, Ведомость ЗИП). Механообработка, сварка, гибка (DXF). Опыт 15+ лет." />
     <script nonce="3S7tz7WIFqxc2WsLvB_rGO9c">
@@ -118,7 +119,7 @@
                 <p class="hero-cta"><a class="cta cta-hero" href="#contacts">Обсудить задачу</a></p>
             </div>
 
-            <div class="hero-visual fade-up">
+            <div class="hero-visual">
                 <div id="modelWrap" class="viewer">
                     <span class="viewer-caption" aria-hidden="true">Интерактивная 3D-модель</span>
                     <canvas id="modelCanvas"></canvas>
@@ -153,7 +154,7 @@
             </div>
         </section>
 
-        <section class="fade-up" id="about">
+        <section id="about">
             <div class="about card">
                 <div class="photo">
                     <img src="./images/hero/engineer.jpg" alt="Ведущий инженер-конструктор" loading="lazy">
@@ -178,7 +179,7 @@
             </div>
         </section>
 
-        <section class="fade-up">
+        <section>
             <div class="card">
                 <h3>Коротко об услугах</h3>
                 <p>
@@ -198,7 +199,7 @@
         <section id="services">
   <h2>Услуги</h2>
   <div class="grid">
-    <div class="card fade-up">
+    <div class="card">
       <h3>3D-моделирование</h3>
       <ul class="list">
         <li>Параметрические 3D-модели деталей и узлов</li>
@@ -206,7 +207,7 @@
         <li>Оптимизация под технологию изготовления</li>
       </ul>
     </div>
-    <div class="card fade-up">
+    <div class="card">
       <h3>Чертежи по ЕСКД</h3>
       <ul class="list">
         <li>ЕСКД, ГОСТ - форматы A4–A0</li>
@@ -214,14 +215,14 @@
         <li>Сборочные чертежи и спецификации (BOM)</li>
       </ul>
     </div>
-    <div class="card fade-up">
+    <div class="card">
       <h3>Техническая документация</h3>
       <ul class="list">
         <li>ПС, РЭ, ЗИП, ТЗ, ведомости, паспорта изделий</li>
         <li>Комплект для опытного образца</li>
       </ul>
     </div>
-    <div class="card fade-up">
+    <div class="card">
       <h3>Производственное сопровождение</h3>
       <ul class="list">
         <li>Механообработка, сварка, гибка/штамповка</li>
@@ -229,7 +230,7 @@
         <li>CAM-задания по договорённости</li>
       </ul>
     </div>
-    <div class="card fade-up">
+    <div class="card">
       <h3>3D-печать и визуализация</h3>
       <ul class="list">
         <li>3D-печать прототипов и малых серий</li>
@@ -237,7 +238,7 @@
         <li>Изображения для презентаций и ТКП</li>
       </ul>
     </div>
-    <div class="card fade-up">
+    <div class="card">
       <h3>Сопровождение проекта</h3>
       <ul class="list">
         <li>Работа с юр. и физ. лицами</li>
@@ -249,16 +250,16 @@
 </section>
 
 
-        <section class="fade-up" id="print-guide">
+        <section id="print-guide">
             <h2>Руководство по печати</h2>
             <div class="grid print-grid">
                 <div class="card print-card">
                     <div class="print-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                             stroke-linejoin="round">
-                            <path d="M24 33V14"></path>
-                            <path d="M16.5 21.5L24 14l7.5 7.5"></path>
-                            <path d="M14 33h20"></path>
+                            <path pathLength="1" d="M24 33V14"></path>
+                            <path pathLength="1" d="M16.5 21.5L24 14l7.5 7.5"></path>
+                            <path pathLength="1" d="M14 33h20"></path>
                         </svg>
                     </div>
                     <div class="print-step">Шаг 1.</div>
@@ -270,9 +271,9 @@
                     <div class="print-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                             stroke-linejoin="round">
-                            <circle cx="17" cy="18" r="5"></circle>
-                            <rect x="28" y="27" width="10" height="10" rx="2"></rect>
-                            <path d="M26 12L36 30H16z"></path>
+                            <circle pathLength="1" cx="17" cy="18" r="5"></circle>
+                            <rect pathLength="1" x="28" y="27" width="10" height="10" rx="2"></rect>
+                            <path pathLength="1" d="M26 12L36 30H16z"></path>
                         </svg>
                     </div>
                     <div class="print-step">Шаг 2.</div>
@@ -284,10 +285,10 @@
                     <div class="print-icon" aria-hidden="true">
                         <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                             stroke-linejoin="round">
-                            <circle cx="18" cy="17" r="5"></circle>
-                            <circle cx="33" cy="20.5" r="4.5"></circle>
-                            <path d="M9.5 34c0-4.4 3.6-8 8-8h1c4.4 0 8 3.6 8 8"></path>
-                            <path d="M26 34c0-3.3 2.7-6 6-6h1c3.3 0 6 2.7 6 6"></path>
+                            <circle pathLength="1" cx="18" cy="17" r="5"></circle>
+                            <circle pathLength="1" cx="33" cy="20.5" r="4.5"></circle>
+                            <path pathLength="1" d="M9.5 34c0-4.4 3.6-8 8-8h1c4.4 0 8 3.6 8 8"></path>
+                            <path pathLength="1" d="M26 34c0-3.3 2.7-6 6-6h1c3.3 0 6 2.7 6 6"></path>
                         </svg>
                     </div>
                     <div class="print-step">Шаг 3.</div>
@@ -301,28 +302,28 @@
         <section id="process">
             <h2>Как работаем</h2>
             <div class="cols">
-                <div class="card fade-up">
+                <div class="card">
                     <h3>1. Бриф и ТЗ</h3>
                     <p class="muted">Обсуждаем задачу, требования, сроки. Помогаю структурировать ТЗ.</p>
                 </div>
-                <div class="card fade-up">
+                <div class="card">
                     <h3>2. Концепт и 3D</h3>
                     <p class="muted">Создаю 3D-модель. Согласуем решения, материалы, допуски.</p>
                 </div>
-                <div class="card fade-up">
+                <div class="card">
                     <h3>3. Чертежи и спецификация</h3>
                     <p class="muted">Оформляю комплект по ЕСКД с посадками и допусками.</p>
                 </div>
-                <div class="card fade-up">
+                <div class="card">
                     <h3>4. Документация и рендеры</h3>
                     <p class="muted">Готовлю ПС, РЭ, ЗИП, по запросу - визуализации.</p>
                 </div>
-                <div class="card fade-up">
+                <div class="card">
                     <h3>5. Передача и поддержка</h3>
                     <p class="muted">Передаю исходники и файлы производства (DXF/STEP и др.). Поддержка на изготовлении.
                     </p>
                 </div>
-                <div class="card fade-up">
+                <div class="card">
                     <h3>Сроки</h3>
                     <p class="muted">Этапы и дедлайны фиксируем заранее.</p>
                 </div>
@@ -416,7 +417,7 @@
         <section id="contacts">
             <h2>Связаться и оплатить</h2>
             <div class="contacts-grid">
-                <div class="contacts-main fade-up">
+                <div class="contacts-main">
                     <h3>Прямые контакты</h3>
                     <p class="muted">Предпочитаете звонок или письмо - отвечаю быстро в рабочие часы.</p>
                     <div class="primary-contacts">
@@ -580,7 +581,7 @@
                     </p>
                 </div>
 
-                <div class="contacts-pay fade-up">
+                <div class="contacts-pay">
                     <h3>Оплата и документы</h3>
                     <p class="muted">Работаю с юридическими и физическими лицами. Передаю полный комплект, готовый к
                         производству.</p>
@@ -600,11 +601,11 @@
         </section>
 
         <section id="reviews">
-            <h2 class="fade-up">Отзывы клиентов</h2>
-            <p class="section-sub fade-up">Реальный опыт заказчиков</p>
+            <h2>Отзывы клиентов</h2>
+            <p class="section-sub">Реальный опыт заказчиков</p>
 
             <div class="reviews-layout">
-            <div class="review-form-wrap fade-up">
+            <div class="review-form-wrap">
                 <h3>Оставить отзыв</h3>
                 <form id="reviewForm" class="review-form" novalidate>
                     <input type="text" name="website" class="hp" tabindex="-1" autocomplete="off">
@@ -635,7 +636,7 @@
             </div>
 
             <div class="reviews-below">
-                <div class="reviews-summary fade-up" id="reviewsSummary" hidden>
+                <div class="reviews-summary" id="reviewsSummary" hidden>
                     <span class="reviews-summary__score" id="summaryScore"></span>
                     <span class="reviews-summary__stars" id="summaryStars"></span>
                     <span class="reviews-summary__count" id="summaryCount"></span>

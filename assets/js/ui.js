@@ -105,10 +105,25 @@ export function initUI() {
   });
 
 
-  const io = new IntersectionObserver(es => es.forEach(e => {
-    if (e.isIntersecting) e.target.classList.add("visible");
-  }), { threshold: .2 });
-  document.querySelectorAll(".fade-up").forEach(el => io.observe(el));
+  // Появление при прокрутке: класс in-view (и visible для карточек отзывов) ставится один раз.
+  // Список селекторов совпадает с assets/css/motion.css.
+  const REVEAL = [
+    ":is(.grid, .cols, .print-grid, .gallery, .contacts-grid, .estimate, .reviews-layout) > *",
+    ".about", ".hero-visual", ".footer", ".section-sub", "main > section > h2", "main > section > .card",
+    ".fade-up",
+  ].join(", ");
+  const revealAll = () => document.querySelectorAll(REVEAL).forEach(el => el.classList.add("in-view", "visible"));
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(entries => entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add("in-view", "visible");
+      io.unobserve(e.target);
+    }), { threshold: 0.01, rootMargin: "0px 0px -8% 0px" });
+    document.querySelectorAll(REVEAL).forEach(el => io.observe(el));
+  } else {
+    revealAll();
+  }
+  window.addEventListener("beforeprint", revealAll);
 
   document.querySelectorAll("[data-phone]").forEach(block => {
     const valueEl = block.querySelector("[data-phone-value]");
