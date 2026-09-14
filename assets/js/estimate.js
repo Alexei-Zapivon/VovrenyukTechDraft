@@ -44,7 +44,7 @@ export function initEstimate() {
     urgency:    { input: $("estUrgency"),    value: $("estUrgencyValue"),    hint: $("estUrgencyHint"),    ticks: $("estUrgencyTicks") },
   };
   const out = {
-    days: $("estDays"), level: $("estLevel"), levelName: $("estLevelName"), levelDesc: $("estLevelDesc"),
+    days: $("estDays"), daysUnit: $("estDaysUnit"), level: $("estLevel"), levelName: $("estLevelName"), levelDesc: $("estLevelDesc"),
     docs: $("estDocs"), telegram: $("estTelegram"), whatsapp: $("estWhatsApp"), email: $("estEmail"), copy: $("estCopy"),
   };
   if (Object.values(fields).some(f => !f.input)) return;
@@ -54,6 +54,14 @@ export function initEstimate() {
   let anim = null;
 
   const pick = key => ESTIMATE[key][Number(fields[key].input.value)];
+
+  // «21 рабочий день», «2–4 рабочих дня», «8–16 рабочих дней»: согласуем с последним числом
+  function daysUnit(n) {
+    const m10 = n % 10, m100 = n % 100;
+    if (m10 === 1 && m100 !== 11) return "рабочий день";
+    if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return "рабочих дня";
+    return "рабочих дней";
+  }
 
   function compute() {
     const c = pick("complexity"), d = pick("depth"), u = pick("urgency");
@@ -98,7 +106,7 @@ export function initEstimate() {
       `Изделие: ${r.c.label}`,
       `Проработка: ${r.d.label} (${r.docs.join(", ")})`,
       `Срочность: ${r.u.label}`,
-      `Ориентир: ${r.min}–${r.max} рабочих дней, уровень «${r.level.name}»`,
+      `Ориентир: ${r.min}–${r.max} ${daysUnit(r.max)}, уровень «${r.level.name}»`,
       "",
       "Описание задачи: ",
     ].join("\n");
@@ -117,6 +125,7 @@ export function initEstimate() {
     }
 
     animateDays(r.min, r.max);
+    if (out.daysUnit) out.daysUnit.textContent = daysUnit(r.max);
     out.level.dataset.level = r.level.key;
     out.levelName.textContent = r.level.name;
     out.levelDesc.textContent = r.level.desc;
