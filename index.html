@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'nonce-3S7tz7WIFqxc2WsLvB_rGO9c' https://cdn.jsdelivr.net https://code.jivo.ru https://*.jivo.ru https://*.jivosite.com; style-src 'self' 'unsafe-inline' https://*.jivo.ru https://*.jivosite.com; img-src 'self' data: blob: https://*.jivo.ru https://*.jivosite.com; font-src 'self' data: https://*.jivo.ru https://*.jivosite.com; connect-src 'self' https://*.jivo.ru wss://*.jivo.ru https://*.jivosite.com wss://*.jivosite.com; frame-src https://*.jivo.ru https://*.jivosite.com; media-src 'self' https://*.jivo.ru https://*.jivosite.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'nonce-3S7tz7WIFqxc2WsLvB_rGO9c' https://code.jivo.ru https://*.jivo.ru https://*.jivosite.com; style-src 'self' 'unsafe-inline' https://*.jivo.ru https://*.jivosite.com; img-src 'self' data: blob: https://*.jivo.ru https://*.jivosite.com; font-src 'self' data: https://*.jivo.ru https://*.jivosite.com; connect-src 'self' https://*.jivo.ru wss://*.jivo.ru https://*.jivosite.com wss://*.jivosite.com; frame-src https://*.jivo.ru https://*.jivosite.com; media-src 'self' https://*.jivo.ru https://*.jivosite.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
     <meta name="theme-color" content="#f5f4ef" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0f1521" media="(prefers-color-scheme: dark)" />
@@ -16,14 +16,6 @@
     <link rel="stylesheet" href="/assets/css/components.css">
     <meta name="description"
         content="Качественно и в срок: 3D-модели, чертежи по ЕСКД, спецификации, сопроводительная документация (ПС, РЭ, Ведомость ЗИП). Механообработка, сварка, гибка (DXF). Опыт 15+ лет." />
-    <script type="importmap" nonce="3S7tz7WIFqxc2WsLvB_rGO9c">
-        {
-          "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.module.min.js",
-            "three/examples/jsm/": "https://cdn.jsdelivr.net/npm/three@0.152.2/examples/jsm/"
-          }
-        }
-    </script>
     <script nonce="3S7tz7WIFqxc2WsLvB_rGO9c">
         // Тема и флаг JS до первой отрисовки, чтобы не мигала смена цветов
         (function () {
@@ -128,17 +120,33 @@
                 <div id="modelWrap" class="viewer">
                     <span class="viewer-caption" aria-hidden="true">Интерактивная 3D-модель</span>
                     <canvas id="modelCanvas"></canvas>
+                    <p id="viewerStatus" class="viewer-status" role="status" hidden></p>
+                    <button id="viewerLoad" class="viewer-load" type="button" hidden>Показать 3D-модель · ≈250 КБ</button>
+                    <p id="viewerDims" class="viewer-dims" hidden></p>
                 </div>
                 <div class="viewer-controls">
                     <label for="explode" class="range-control">
-                        <span class="range-label muted">Разборка</span>
+                        <span class="range-label">Разборка</span>
                         <input id="explode" type="range" min="0" max="100" value="0">
-                        <span id="explodeValue" class="range-value muted">0%</span>
+                        <span id="explodeValue" class="range-value">0%</span>
                     </label>
-                    <div class="viewer-modes">
+                    <label for="section" class="range-control">
+                        <span class="range-label">Сечение</span>
+                        <input id="section" type="range" min="0" max="100" value="0">
+                        <span id="sectionValue" class="range-value">0%</span>
+                    </label>
+                    <div class="viewer-modes" role="group" aria-label="Режим отображения">
                         <button id="viewSolid" class="toggle-btn is-active" type="button">Рендер</button>
                         <button id="viewWire" class="toggle-btn" type="button">Каркас</button>
+                        <button id="viewDraw" class="toggle-btn" type="button">Чертёж</button>
                     </div>
+                </div>
+                <div class="viewer-views" role="group" aria-label="Стандартные виды">
+                    <span class="viewer-views__label">Вид</span>
+                    <button class="toggle-btn" type="button" data-view="front">Спереди</button>
+                    <button class="toggle-btn" type="button" data-view="top">Сверху</button>
+                    <button class="toggle-btn" type="button" data-view="left">Слева</button>
+                    <button class="toggle-btn is-active" type="button" data-view="iso">Изометрия</button>
                 </div>
             </div>
         </section>

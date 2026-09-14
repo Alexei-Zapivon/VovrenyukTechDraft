@@ -5,7 +5,7 @@
 # Для PHP-скриптов (api/, admin/) заголовки выставляет сам PHP, поэтому CSP здесь только для html.
 <IfModule mod_headers.c>
     <FilesMatch "\.html?$">
-        Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'nonce-3S7tz7WIFqxc2WsLvB_rGO9c' https://cdn.jsdelivr.net https://code.jivo.ru https://*.jivo.ru https://*.jivosite.com; style-src 'self' 'unsafe-inline' https://*.jivo.ru https://*.jivosite.com; img-src 'self' data: blob: https://*.jivo.ru https://*.jivosite.com; font-src 'self' data: https://*.jivo.ru https://*.jivosite.com; connect-src 'self' https://*.jivo.ru wss://*.jivo.ru https://*.jivosite.com wss://*.jivosite.com; frame-src https://*.jivo.ru https://*.jivosite.com; media-src 'self' https://*.jivo.ru https://*.jivosite.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests; frame-ancestors 'none'"
+        Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'nonce-3S7tz7WIFqxc2WsLvB_rGO9c' https://code.jivo.ru https://*.jivo.ru https://*.jivosite.com; style-src 'self' 'unsafe-inline' https://*.jivo.ru https://*.jivosite.com; img-src 'self' data: blob: https://*.jivo.ru https://*.jivosite.com; font-src 'self' data: https://*.jivo.ru https://*.jivosite.com; connect-src 'self' https://*.jivo.ru wss://*.jivo.ru https://*.jivosite.com wss://*.jivosite.com; frame-src https://*.jivo.ru https://*.jivosite.com; media-src 'self' https://*.jivo.ru https://*.jivosite.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; upgrade-insecure-requests; frame-ancestors 'none'"
         Header always set X-Frame-Options "DENY"
     </FilesMatch>
     Header always set X-Content-Type-Options "nosniff"
@@ -27,4 +27,10 @@
 </FilesMatch>
 <IfModule mod_alias.c>
     RedirectMatch 404 /\.git
+</IfModule>
+
+# 3D-модель в формате glTF Binary
+<IfModule mod_mime.c>
+    AddType model/gltf-binary .glb
+    AddType font/woff2 .woff2
 </IfModule>

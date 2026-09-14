@@ -1,0 +1,15 @@
+{
+  "name": "vtd-viewer",
+  "private": true,
+  "description": "Сборка 3D-вьюера (three.js) в один файл и подготовка модели",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/scene.js --bundle --format=esm --minify --target=es2019 --outfile=../assets/js/viewer.bundle.js --legal-comments=none",
+    "model": "gltfpack -i ../models/model_raw.glb -o ../models/model.glb -si 0.4 -cc"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "gltfpack": "^0.24.0",
+    "three": "^0.186.0"
+  }
+}

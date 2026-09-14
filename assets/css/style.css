@@ -642,7 +642,7 @@ html.no-3d .viewer-controls {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex: 1 1 200px;
+    flex: 1 1 170px;
     font: 500 12px/1 var(--font-mono);
     letter-spacing: .08em;
     text-transform: uppercase;
@@ -670,6 +670,107 @@ html.no-3d .viewer-controls {
 .viewer-modes {
     display: flex;
     gap: 6px;
+}
+
+.viewer-status,
+.viewer-load {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    margin: 0;
+    font: 500 12px/1 var(--font-mono);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .85);
+    white-space: nowrap;
+}
+
+.viewer-status {
+    pointer-events: none;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, .25);
+    border-radius: var(--radius);
+    background: rgba(8, 24, 60, .6);
+}
+
+.viewer-load {
+    appearance: none;
+    cursor: pointer;
+    padding: 12px 18px;
+    border: 1px solid rgba(255, 255, 255, .5);
+    border-radius: var(--radius);
+    background: rgba(8, 24, 60, .7);
+    text-transform: none;
+    letter-spacing: .02em;
+    font-size: 13px;
+}
+
+.viewer-load:hover {
+    background: #ffffff;
+    color: var(--blueprint);
+}
+
+.viewer-dims {
+    position: absolute;
+    left: 20px;
+    bottom: 18px;
+    z-index: 2;
+    margin: 0;
+    font: 500 11px/1 var(--font-mono);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .85);
+    pointer-events: none;
+}
+
+.viewer.is-draw {
+    background-size: 10px 10px, 10px 10px, 50px 50px, 50px 50px;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, .09) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .09) 1px, transparent 1px),
+        linear-gradient(rgba(255, 255, 255, .2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, .2) 1px, transparent 1px);
+}
+
+.viewer-views {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: var(--s-3);
+}
+
+.viewer-views__label {
+    font: 500 11px/1 var(--font-mono);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, .6);
+    margin-right: 4px;
+}
+
+.viewer-views .toggle-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    border-color: rgba(255, 255, 255, .25);
+    color: rgba(255, 255, 255, .8);
+}
+
+.viewer-views .toggle-btn.is-active {
+    background: rgba(255, 255, 255, .16);
+    border-color: rgba(255, 255, 255, .5);
+    color: #ffffff;
+}
+
+html.no-3d .viewer-views {
+    display: none;
+}
+
+.range-control input[type="range"]:disabled {
+    opacity: .35;
+    cursor: not-allowed;
 }
 
 .viewer-modes .toggle-btn {
