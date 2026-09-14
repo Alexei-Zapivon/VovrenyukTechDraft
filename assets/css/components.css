@@ -526,6 +526,58 @@
     color: var(--ink);
 }
 
+/* сложность: сегментированные кнопки */
+.est-seg {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+}
+
+.est-seg__btn {
+    appearance: none;
+    padding: 10px 8px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--ink-2);
+    font: 600 14px/1.2 var(--font-sans);
+    cursor: pointer;
+    transition: background .15s ease, color .15s ease, border-color .15s ease, transform .15s ease;
+}
+
+.est-seg__btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.est-seg__btn.is-active {
+    background: var(--accent-fill);
+    border-color: var(--accent-fill);
+    color: var(--on-accent);
+}
+
+/* группа компромисса */
+.est-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px dashed var(--line-strong);
+}
+
+.est-group__title {
+    font: 600 11px/1 var(--font-mono);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--ink);
+}
+
+.est-group__title span {
+    color: var(--accent);
+    margin-left: 6px;
+}
+
+/* ползунки как маркеры на чертеже */
 .est-range {
     -webkit-appearance: none;
     appearance: none;
@@ -611,10 +663,6 @@
     background: var(--line-strong);
 }
 
-.est-ticks span:first-child {
-    text-align: left;
-}
-
 .est-ticks span:first-child::before {
     left: 6px;
 }
@@ -640,6 +688,37 @@
     min-height: 2.6em;
 }
 
+/* подсказка-связка на крайних положениях */
+.est-link {
+    margin: var(--s-2) 0 0;
+    padding: 8px 10px 8px 30px;
+    position: relative;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--ink-2);
+    background: var(--accent-soft);
+    border-left: 2px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    animation: est-link-in .3s ease;
+}
+
+.est-link::before {
+    content: "\2194";
+    position: absolute;
+    left: 10px;
+    top: 7px;
+    font: 700 13px/1.4 var(--font-mono);
+    color: var(--accent);
+}
+
+@keyframes est-link-in {
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+}
+
+/* результат */
 .estimate__result {
     display: flex;
     flex-direction: column;
@@ -675,14 +754,58 @@
     color: var(--muted);
 }
 
+/* уровень: треугольник компромисса и штамп */
 .est-level {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--s-3);
+    display: grid;
+    grid-template-columns: 150px minmax(0, 1fr);
+    gap: var(--s-4);
+    align-items: center;
     padding: var(--s-3);
     border: 1px solid var(--line);
     border-radius: var(--radius);
     background: var(--surface-2);
+}
+
+.est-tri {
+    width: 150px;
+    height: 118px;
+    display: block;
+    overflow: visible;
+}
+
+.est-tri__shape {
+    fill: var(--surface);
+    stroke: var(--line-strong);
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+}
+
+.est-tri__label {
+    font: 600 9px var(--font-mono);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    fill: var(--ink);
+    transition: opacity .3s ease, fill .3s ease;
+}
+
+.est-tri__label.is-sacrificed {
+    fill: var(--muted);
+    text-decoration: line-through;
+}
+
+.est-tri__dot {
+    fill: var(--accent);
+    stroke: var(--surface);
+    stroke-width: 2;
+    transition: transform .45s cubic-bezier(.22, 1, .36, 1);
+}
+
+.est-level__body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-2);
+    min-width: 0;
 }
 
 .est-level__stamp {
@@ -707,6 +830,16 @@
     color: var(--on-accent);
     background: var(--accent-fill);
     border-color: var(--accent-fill);
+}
+
+.est-level.is-changed .est-level__stamp {
+    animation: est-stamp .35s cubic-bezier(.34, 1.56, .64, 1);
+}
+
+@keyframes est-stamp {
+    from {
+        transform: rotate(-3deg) scale(1.15);
+    }
 }
 
 .est-level__desc {
@@ -781,5 +914,17 @@
     .est-actions .btn-contact {
         width: 100%;
         justify-content: center;
+    }
+
+    .est-level {
+        grid-template-columns: 1fr;
+        justify-items: start;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .est-link,
+    .est-level.is-changed .est-level__stamp {
+        animation: none;
     }
 }

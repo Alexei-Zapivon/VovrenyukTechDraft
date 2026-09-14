@@ -330,35 +330,45 @@
 
         <section id="estimate">
             <h2>Оценка сроков</h2>
-            <p class="section-sub">Без ТЗ точных цифр не бывает. Зато можно прикинуть баланс: подвиньте ползунки и получите ориентир по срокам и составу работ.</p>
+            <p class="section-sub">Быстро, качественно, недорого: выбирают любые два, третье уступает само. Подвиньте ползунки и получите ориентир по срокам, уровню и составу работ.</p>
             <div class="estimate">
                 <div class="estimate__controls card">
-                    <div class="est-field">
+                    <div class="est-field est-field--complexity">
                         <div class="est-field__head">
-                            <label class="est-field__label" for="estComplexity">Сложность изделия</label>
-                            <output class="est-field__value" id="estComplexityValue" for="estComplexity">Сборка</output>
+                            <span class="est-field__label" id="estComplexityLabel">Сложность изделия</span>
                         </div>
-                        <input class="est-range" id="estComplexity" type="range" min="0" max="2" step="1" value="1" aria-describedby="estComplexityHint">
-                        <div class="est-ticks" id="estComplexityTicks" aria-hidden="true"><span>Деталь</span><span>Сборка</span><span>Комплект</span></div>
+                        <div class="est-seg" id="estComplexity" role="group" aria-labelledby="estComplexityLabel">
+                            <button type="button" class="est-seg__btn" data-value="0" aria-pressed="false">Деталь</button>
+                            <button type="button" class="est-seg__btn is-active" data-value="1" aria-pressed="true">Сборка</button>
+                            <button type="button" class="est-seg__btn" data-value="2" aria-pressed="false">Комплект</button>
+                        </div>
                         <p class="est-hint" id="estComplexityHint"></p>
                     </div>
-                    <div class="est-field">
-                        <div class="est-field__head">
-                            <label class="est-field__label" for="estDepth">Глубина проработки</label>
-                            <output class="est-field__value" id="estDepthValue" for="estDepth">Расширенный</output>
+
+                    <div class="est-group">
+                        <div class="est-group__title">Компромисс <span>быстро ↔ качественно</span></div>
+
+                        <div class="est-field">
+                            <div class="est-field__head">
+                                <label class="est-field__label" for="estUrgency">Срочность</label>
+                                <output class="est-field__value" id="estUrgencyValue" for="estUrgency">Обычный</output>
+                            </div>
+                            <input class="est-range" id="estUrgency" type="range" min="0" max="2" step="1" value="0" aria-describedby="estUrgencyHint">
+                            <div class="est-ticks" id="estUrgencyTicks" aria-hidden="true"><span>Обычный</span><span>Ускоренный</span><span>Срочно</span></div>
+                            <p class="est-hint" id="estUrgencyHint"></p>
+                            <p class="est-link" id="estUrgencyLink" hidden></p>
                         </div>
-                        <input class="est-range" id="estDepth" type="range" min="0" max="2" step="1" value="1" aria-describedby="estDepthHint">
-                        <div class="est-ticks" id="estDepthTicks" aria-hidden="true"><span>Базовый</span><span>Расширенный</span><span>Максимальный</span></div>
-                        <p class="est-hint" id="estDepthHint"></p>
-                    </div>
-                    <div class="est-field">
-                        <div class="est-field__head">
-                            <label class="est-field__label" for="estUrgency">Срочность</label>
-                            <output class="est-field__value" id="estUrgencyValue" for="estUrgency">Обычный</output>
+
+                        <div class="est-field">
+                            <div class="est-field__head">
+                                <label class="est-field__label" for="estDepth">Глубина проработки</label>
+                                <output class="est-field__value" id="estDepthValue" for="estDepth">Расширенный</output>
+                            </div>
+                            <input class="est-range" id="estDepth" type="range" min="0" max="2" step="1" value="1" aria-describedby="estDepthHint">
+                            <div class="est-ticks" id="estDepthTicks" aria-hidden="true"><span>Базовый</span><span>Расширенный</span><span>Максимальный</span></div>
+                            <p class="est-hint" id="estDepthHint"></p>
+                            <p class="est-link" id="estDepthLink" hidden></p>
                         </div>
-                        <input class="est-range" id="estUrgency" type="range" min="0" max="2" step="1" value="0" aria-describedby="estUrgencyHint">
-                        <div class="est-ticks" id="estUrgencyTicks" aria-hidden="true"><span>Обычный</span><span>Ускоренный</span><span>Срочно</span></div>
-                        <p class="est-hint" id="estUrgencyHint"></p>
                     </div>
                 </div>
 
@@ -370,9 +380,18 @@
                             <span id="estDaysUnit">рабочих дней</span>
                         </div>
                     </div>
-                    <div class="est-level" id="estLevel" data-level="standard">
-                        <span class="est-level__stamp" id="estLevelName">Стандарт</span>
-                        <span class="est-level__desc" id="estLevelDesc"></span>
+                    <div class="est-level" id="estLevel" data-level="optimal">
+                        <svg class="est-tri" viewBox="0 0 150 118" aria-hidden="true">
+                            <polygon class="est-tri__shape" points="75,22 138,96 12,96" />
+                            <text class="est-tri__label" id="estTriFast" x="75" y="12" text-anchor="middle">Быстро</text>
+                            <text class="est-tri__label" id="estTriQuality" x="146" y="112" text-anchor="end">Качественно</text>
+                            <text class="est-tri__label" id="estTriCheap" x="4" y="112" text-anchor="start">Дёшево</text>
+                            <circle class="est-tri__dot" id="estTriDot" r="5" />
+                        </svg>
+                        <div class="est-level__body">
+                            <span class="est-level__stamp" id="estLevelName">Оптимально</span>
+                            <span class="est-level__desc" id="estLevelDesc"></span>
+                        </div>
                     </div>
                     <h3 class="est-result__title">Состав работ</h3>
                     <ul class="est-docs" id="estDocs"></ul>
