@@ -1,4 +1,4 @@
-﻿export function initUI() {
+export function initUI() {
   const html = document.documentElement;
   const burger = document.getElementById("burger");
   const closeBtn = document.getElementById("mobileClose");
@@ -31,6 +31,16 @@
       if (backdrop) backdrop.hidden = true;
     }, 260);
   };
+
+  // Переключатель темы. Без сохранённого выбора тема следует системной настройке.
+  const themeBtn = document.getElementById("themeToggle");
+  themeBtn?.addEventListener("click", () => {
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const current = html.getAttribute("data-theme") || (systemDark ? "dark" : "light");
+    const next = current === "dark" ? "light" : "dark";
+    html.setAttribute("data-theme", next);
+    try { localStorage.setItem("theme", next); } catch (e) { /* приватный режим */ }
+  });
 
   burger?.addEventListener("click", () => {
     if (html.classList.contains("mobile-open")) {
